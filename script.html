@@ -83,6 +83,8 @@
 
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const author = users.find(u=>u.username===post.author)||{};
+  const authorBadges = renderBadgesHtml(author);
+
   const avatarColor = author.avatarColor||'#7c6af7';
   const avatarText = post.author.charAt(0).toUpperCase();
   const banner = author.banner||'';
@@ -97,7 +99,7 @@
       ${imgHtml}
       <div class="sp-header">
         <div class="sp-title-area">
-          <h1 class="sp-title">${escapeHtml(post.title)}</h1>
+          <h1 class="sp-title">${escapeHtml(post.title)} ${post.isVerifiedPost ? '<span style="color:#1e90ff" title="Verificado">✅</span>' : ''}</h1>
           <div class="sp-meta">
             <span><i class="fas fa-gamepad"></i> ${escapeHtml(post.game||'Universal')}</span>
             <span><i class="fas fa-eye"></i> ${post.views} views</span>
@@ -117,6 +119,15 @@
           <button onclick="copyScriptPage(${post.id})" id="copyBtn2"><i class="fas fa-copy"></i> Copiar</button>
         </div>
         <pre class="sp-code">${escapeHtml(post.code)}</pre>
+      </div>
+      <!-- Comentários -->
+      <div class="comment-section">
+        <h3><i class="fas fa-comments"></i> Comentários</h3>
+        <div class="comment-input-wrap">
+          <input type="text" id="cInput" placeholder="Escreva um comentário...">
+          <button class="btn-send" onclick="addComment(${post.id})">Enviar</button>
+        </div>
+        <div id="commentList"></div>
       </div>
     </div>
     <aside class="sp-sidebar">

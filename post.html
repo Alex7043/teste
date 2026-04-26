@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/><title>Postar Script — ScriptDrop</title>
+<link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar"><div class="nav-inner"><a class="nav-logo" href="./">⚡ ScriptDrop</a></div></nav>
+<div class="main-wrap" style="display:block; max-width:800px; margin: 50px auto;">
+  <div class="settings-card" style="padding:40px">
+    <h1 style="margin-bottom:30px"><i class="fas fa-upload" style="color:#7c6af7"></i> Publicar Novo Script</h1>
+    <div class="fg">
+      <label>ID do Jogo (Roblox)</label>
+      <div style="display:flex; gap:10px">
+        <input id="mGameId" placeholder="Cole o ID do jogo aqui...">
+        <button class="btn-primary-sm" onclick="autoFetchGame()">Puxar Info</button>
+      </div>
+    </div>
+    <div class="fg"><label>Título do Script *</label><input id="mTitle" placeholder="Ex: Fly Hack Gui"></div>
+    <div class="fg"><label>Nome do Jogo *</label><input id="mGame" placeholder="Ex: Blox Fruits"></div>
+    <div class="fg"><label>URL da Imagem</label><input id="mImage" placeholder="URL da foto"></div>
+    <div class="fg"><label>Script (Código) *</label><textarea id="mCode" style="height:300px"></textarea></div>
+    <button class="btn-submit" onclick="submitPost()">Publicar Agora</button>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+async function autoFetchGame() {
+  const id = document.getElementById('mGameId').value.trim();
+  if(!id) return;
+  showNotification("Buscando dados do Roblox...");
+  const gameInfo = await fetchRobloxGame(id);
+  if(gameInfo) {
+    document.getElementById('mGame').value = gameInfo.name;
+    document.getElementById('mImage').value = gameInfo.image;
+    showNotification("Dados carregados!");
+  } else {
+    showNotification("Não consegui encontrar o jogo.", "error");
+  }
+}
+</script>
+</body>
+</html>

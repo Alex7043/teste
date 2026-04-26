@@ -101,6 +101,15 @@
           </div>
         </div>
 
+        <div class="fg">
+          <label><i class="fas fa-music"></i> Música do Perfil</label>
+          <div class="file-input-wrap">
+            <input id="sMusic" placeholder="URL .mp3 ou carregar arquivo..." style="flex-grow:1"/>
+            <input type="file" id="fileMusic" class="hidden-file" accept="audio/*" onchange="handleFile(this, 'sMusic')"/>
+            <button class="btn-file" onclick="document.getElementById('fileMusic').click()"><i class="fas fa-upload"></i> Arquivo</button>
+          </div>
+        </div>
+
         <button class="btn-submit" onclick="saveAccount()"><i class="fas fa-save"></i> Salvar</button>
         <p id="accountMsg" class="save-msg"></p>
       </div>
@@ -249,6 +258,7 @@ function loadSettings(){
   document.getElementById('sBio').value = user.bio||'';
   document.getElementById('sAvatarURL').value = user.avatarURL||'';
   document.getElementById('sBanner').value = user.banner||'';
+  document.getElementById('sMusic').value = user.profileMusic||'';
   document.getElementById('sAvatarColor').value = user.avatarColor||'#7c6af7';
   document.getElementById('sNameColor').value = user.nameColor||'#ffffff';
   updatePreview();
@@ -283,13 +293,25 @@ function renderAdminUsers() {
         </div>
       </div>
 
+      <!-- Seção Moderação -->
       <div class="admin-section">
-        <div class="admin-section-title"><i class="fas fa-gavel"></i> Moderação</div>
-        <div class="admin-actions">
-          <button class="btn-admin-action btn-warn" onclick="adminAction('${u.id}', 'warn')"><i class="fas fa-exclamation-triangle"></i> Dar Warn</button>
-          <button class="btn-admin-action btn-timeout" onclick="adminAction('${u.id}', 'timeout')"><i class="fas fa-clock"></i> Silenciar 24h</button>
-          <button class="btn-admin-action btn-ban" onclick="adminAction('${u.id}', '${u.isBanned ? 'unban' : 'ban'}')"><i class="fas fa-user-slash"></i> ${u.isBanned ? 'Revogar Ban' : 'Banir Usuário'}</button>
-          <button class="btn-admin-action btn-file" onclick="adminAction('${u.id}', 'togglePost')"><i class="fas fa-code"></i> Bloquear Posts</button>
+        <div class="admin-section-title"><i class="fas fa-gavel"></i> Punições & Status</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+           <div class="fg">
+             <label>Avisos: ${u.warns || 0}</label>
+             <div style="display:flex; gap:5px">
+               <button class="btn-admin-action btn-warn" onclick="adminAction('${u.id}', 'warn')">+ Warn</button>
+               <button class="btn-reset-warn" onclick="adminAction('${u.id}', 'resetWarn')">Reset Warns</button>
+             </div>
+           </div>
+           <div class="fg">
+             <label>Status da Conta</label>
+             <button class="btn-admin-action btn-ban" onclick="adminAction('${u.id}', '${u.isBanned ? 'unban' : 'ban'}')">${u.isBanned ? 'UNBAN' : 'BANIR'}</button>
+           </div>
+        </div>
+        <div class="admin-actions" style="margin-top:10px">
+          <button class="btn-admin-action btn-timeout" onclick="adminAction('${u.id}', 'timeout')">Silenciar (Timeout 24h)</button>
+          <button class="btn-admin-action btn-file" onclick="adminAction('${u.id}', 'togglePost')">${u.canPost === false ? 'Liberar Posts' : 'Bloquear Posts'}</button>
         </div>
       </div>
 
@@ -373,6 +395,7 @@ function saveAccount(){
   users[idx].bio = document.getElementById('sBio').value.trim();
   users[idx].avatarURL = document.getElementById('sAvatarURL').value.trim();
   users[idx].banner = document.getElementById('sBanner').value.trim();
+  users[idx].profileMusic = document.getElementById('sMusic').value.trim();
   localStorage.setItem('users',JSON.stringify(users));
   showMsg('accountMsg','✅ Salvo com sucesso!','#00d4aa');
 }
