@@ -228,6 +228,7 @@ function initNavbar() {
   const logged   = document.getElementById('nav-logged');
   const navName  = document.getElementById('navName');
   const navAvatar= document.getElementById('navAvatar');
+  const navAdmin = document.getElementById('navAdminBtn');
 
   if (!guest || !logged) return;
 
@@ -238,6 +239,10 @@ function initNavbar() {
     if (navAvatar) {
       const users = getUsers();
       const user  = users.find(u => u.username === session);
+
+      if (navAdmin && user?.id === "937937001112555531") {
+        navAdmin.style.display = 'flex';
+      }
       
       if (user?.avatarURL) { navAvatar.innerHTML = `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
       else { navAvatar.textContent = session.charAt(0).toUpperCase(); navAvatar.style.background = user?.avatarColor || '#7c6af7'; }

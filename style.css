@@ -93,6 +93,15 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 .btn-post-nav { background: rgba(124, 106, 247, 0.15); color: #7c6af7; border: 1px solid rgba(124, 106, 247, 0.3); padding: 7px 15px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; }
 .btn-post-nav:hover { background: #7c6af7; color: #fff; }
 
+.btn-admin-nav { 
+  background: rgba(255, 215, 0, 0.1); 
+  color: #ffd700; 
+  border: 1px solid rgba(255, 215, 0, 0.2); 
+  padding: 7px 15px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; 
+  display: none; align-items: center; gap: 8px;
+}
+.btn-admin-nav:hover { background: #ffd700; color: #000; border-color: #ffd700; }
+
 .btn-discord-nav { 
   background: #5865f2 !important; 
   color: #fff !important;
