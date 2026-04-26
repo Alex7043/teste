@@ -73,6 +73,25 @@ function togglePass(id, btn) {
   btn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
 }
 
+function connectDiscord() {
+  const session = getSession();
+  if (!session) return window.location.href = 'login';
+  
+  const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175&permissions=8&integration_type=1&scope=bot";
+  window.open(botLink, '_blank');
+  
+  const discordName = prompt("Após adicionar o bot, digite seu usuário do Discord (ex: alex_oficial):");
+  if(discordName) {
+    const users = getUsers();
+    const idx = users.findIndex(u => u.username === session);
+    if (idx !== -1) {
+      users[idx].discordUser = discordName;
+      saveUsers(users);
+      location.reload();
+    }
+  }
+}
+
 // ---- Modal ----
 function openPostModal() {
   const m = document.getElementById('postModal');
@@ -209,6 +228,7 @@ function initNavbar() {
   const logged   = document.getElementById('nav-logged');
   const navName  = document.getElementById('navName');
   const navAvatar= document.getElementById('navAvatar');
+  const btnDiscord = document.getElementById('btnDiscordNav');
 
   if (!guest || !logged) return;
 
@@ -219,6 +239,11 @@ function initNavbar() {
     if (navAvatar) {
       const users = getUsers();
       const user  = users.find(u => u.username === session);
+      
+      if (btnDiscord) {
+        btnDiscord.style.display = user?.discordUser ? 'none' : 'flex';
+      }
+
       if (user?.avatarURL) { navAvatar.innerHTML = `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
       else { navAvatar.textContent = session.charAt(0).toUpperCase(); navAvatar.style.background = user?.avatarColor || '#7c6af7'; }
     }

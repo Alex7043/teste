@@ -55,6 +55,7 @@
         <a href="register" class="btn-primary-sm">Registrar</a>
       </div>
       <div id="nav-logged" class="nav-user-area" style="display:none">
+        <button class="btn-discord-nav" id="btnDiscordNav" onclick="connectDiscord()"><i class="fab fa-discord"></i> Conectar</button>
         <div class="nav-avatar-wrap" id="navAvatarWrap">
           <div class="nav-avatar" id="navAvatar"></div>
           <span id="navName"></span>
@@ -263,21 +264,6 @@ function saveAppearance(){
   users[idx].nameColor = document.getElementById('sNameColor').value;
   localStorage.setItem('users',JSON.stringify(users));
   showMsg('appearMsg','✅ Aparência salva!','#00d4aa');
-}
-
-function connectDiscord() {
-  const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175&permissions=8&integration_type=1&scope=bot";
-  window.open(botLink, '_blank');
-  
-  const discordName = prompt("Após adicionar o bot, digite seu usuário do Discord (ex: alex_oficial):");
-  if(discordName) {
-    const session = localStorage.getItem('session');
-    const users = JSON.parse(localStorage.getItem('users')||'[]');
-    const idx = users.findIndex(u=>u.username===session);
-    users[idx].discordUser = discordName;
-    localStorage.setItem('users', JSON.stringify(users));
-    location.reload();
-  }
 }
 
 function changePassword(){

@@ -93,6 +93,12 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 .btn-post-nav { background: rgba(124, 106, 247, 0.15); color: #7c6af7; border: 1px solid rgba(124, 106, 247, 0.3); padding: 7px 15px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; }
 .btn-post-nav:hover { background: #7c6af7; color: #fff; }
 
+.btn-discord-nav { 
+  background: #5865F2; color: #fff; padding: 7px 15px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; 
+  display: none; align-items: center; gap: 8px; transition: all 0.3s ease;
+}
+.btn-discord-nav:hover { background: #4752c4; transform: translateY(-2px); }
+
 .nav-avatar-wrap { position: relative; display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px 10px; border-radius: 8px; }
 .nav-avatar-wrap:hover { background: rgba(255,255,255,0.05); }
 .nav-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 0.85rem; }
