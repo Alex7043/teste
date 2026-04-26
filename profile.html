@@ -309,10 +309,7 @@ function renderProfile(){
       <div class="profile-info">
         <div class="profile-name-row">
           <h1 class="profile-name" style="color:${nameColor}">${escapeHtml(targetUser)}</h1>
-          ${badge?`<span class="profile-badge">${escapeHtml(badge)}</span>`:''}
-        </div>
-        <div style="margin-top: 10px; display: flex; gap: 10px;">
-          ${discord?`<span class="discord-badge"><i class="fab fa-discord"></i> Membro Discord</span>`:''}
+          ${badgesHtml}
         </div>
         <p class="profile-bio">${escapeHtml(bio)}</p>
         ${discord?`

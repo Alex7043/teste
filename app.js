@@ -70,7 +70,7 @@ function connectDiscord() {
   if (!session) return window.location.href = 'login';
   
   const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175";
-  window.location.href = botLink; // Redireciona diretamente para evitar bloqueio de popup
+  window.open(botLink, '_blank'); // Abre em nova aba para o script abaixo continuar rodando
   
   const discordName = prompt("Após adicionar o bot, digite seu usuário do Discord (ex: alex_oficial):");
   if(discordName) {
