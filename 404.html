@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ScriptDrop - Redirecting...</title>
+    <script type="text/javascript">
+        // Captura o caminho que deu 404 (ex: /alex) e joga para o profile
+        var pathSegments = window.location.pathname.split('/');
+        var lastSegment = pathSegments[pathSegments.length - 1];
+        if (lastSegment) {
+            window.location.replace(window.location.origin + window.location.pathname.replace(lastSegment, '') + 'profile?user=' + lastSegment);
+        }
+    </script>
+</head>
+<body></body>
+</html>

@@ -202,6 +202,7 @@
     </div>
     <div class="modal-body">
       <div class="fg"><label>Bio</label><input id="editBio" placeholder="Fale sobre você..."/></div>
+      <div class="fg"><label>Link da Música (MP3)</label><input id="editMusic" placeholder="https://site.com/musica.mp3"/></div>
       <div class="fg"><label>URL do Avatar</label><input id="editAvatarURL" placeholder="https://..."/></div>
       <div class="fg"><label>URL do Banner <span class="opt">(imagem de fundo)</span></label><input id="editBanner" placeholder="https://..."/></div>
       <div class="fg"><label>Cor do Avatar</label>
@@ -276,8 +277,17 @@ function saveProfile(){
 
 function renderProfile(){
   const params = new URLSearchParams(location.search);
-  const targetUser = params.get('user') || localStorage.getItem('session');
+  let targetUser = params.get('user');
   const session = localStorage.getItem('session');
+
+  if (!targetUser) targetUser = session;
+
+  // URL Cleaner: Muda de profile?user=alex para apenas /alex
+  if (targetUser && window.history.replaceState && !window.location.search.includes('raw')) {
+    const newUrl = window.location.pathname.replace(/profile(\.html)?$/, '') + targetUser;
+    window.history.replaceState(null, '', newUrl);
+  }
+
   const isOwn = targetUser === session;
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const user = users.find(u=>u.username===targetUser);
@@ -323,7 +333,10 @@ function renderProfile(){
       <div class="profile-info">
         <div class="profile-name-row">
           <h1 class="profile-name" style="color:${nameColor}">${escapeHtml(targetUser)}</h1>
-          <div class="uid-tag" title="User ID: ${uid}"><i class="fas fa-fingerprint"></i> #${uid}</div>
+          <div class="uid-tag" title="User ID: ${uid}">
+            <i class="fas fa-id-card"></i>
+            <span>#${uid}</span>
+          </div>
           ${badgesHtml}
         </div>
         <p class="profile-bio">${escapeHtml(bio)}</p>

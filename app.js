@@ -11,6 +11,25 @@ function escapeHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function showNotification(msg, type = 'success') {
+  let container = document.getElementById('notif-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'notif-container';
+    document.body.appendChild(container);
+  }
+  const notif = document.createElement('div');
+  notif.className = `notif-item ${type} animate-fade-up`;
+  const icon = type === 'error' ? 'fa-circle-xmark' : 'fa-circle-check';
+  notif.innerHTML = `<i class="fas ${icon}"></i> <span>${msg}</span>`;
+  container.appendChild(notif);
+  setTimeout(() => {
+    notif.style.opacity = '0';
+    notif.style.transform = 'translate(0, -20px)';
+    setTimeout(() => notif.remove(), 500);
+  }, 4000);
+}
+
 function timeAgo(ts) {
   if (!ts) return '';
   const diff = Math.floor((Date.now() - ts) / 1000);
@@ -86,6 +105,31 @@ function togglePass(id, btn) {
   btn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
 }
 
+// ---- Social Systems ----
+function toggleFollow(targetUsername) {
+  const session = getSession();
+  if (!session) return showNotification("Faça login para seguir!", "error");
+  if (session === targetUsername) return;
+
+  let users = getUsers();
+  let me = users.find(u => u.username === session);
+  if (!me.following) me.following = [];
+
+  const idx = me.following.indexOf(targetUsername);
+  if (idx > -1) {
+    me.following.splice(idx, 1);
+    showNotification(`Você deixou de seguir ${targetUsername}`);
+  } else {
+    me.following.push(targetUsername);
+    showNotification(`Seguindo ${targetUsername}!`);
+  }
+  saveUsers(users);
+  location.reload();
+}
+
+function getChatMessages() { return JSON.parse(localStorage.getItem('chat_msgs') || '[]'); }
+function saveChatMessages(m) { localStorage.setItem('chat_msgs', JSON.stringify(m)); }
+
 // ---- Modal ----
 function openPostModal() {
   const m = document.getElementById('postModal');
@@ -109,10 +153,10 @@ function submitPost() {
   const session = getSession();
   const user = getUsers().find(u => u.username === session);
 
-  if (!title || !code) return alert('Preencha o título e o script.');
-  if (user?.isBanned) return alert('Sua conta está banida.');
-  if (!user?.canPost) return alert('Seu acesso para publicar scripts foi revogado.');
-  if (user?.timeoutUntil > Date.now()) return alert('Você está em timeout.');
+  if (!title || !code) return showNotification('Preencha o título e o script.', 'error');
+  if (user?.isBanned) return showNotification('Sua conta está banida.', 'error');
+  if (!user?.canPost) return showNotification('Seu acesso para publicar scripts foi revogado.', 'error');
+  if (user?.timeoutUntil > Date.now()) return showNotification('Você está em timeout temporário.', 'error');
 
   const posts = getPosts();
   posts.unshift({

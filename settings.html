@@ -203,7 +203,7 @@ function handleFile(input, targetId) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 1024 * 1024) {
-    alert("Arquivo muito grande! Escolha uma imagem com menos de 1MB.");
+    showNotification("Arquivo muito grande! Escolha uma imagem com menos de 1MB.", "error");
     input.value = "";
     return;
   }
@@ -281,16 +281,20 @@ function renderAdminUsers() {
           <strong>${u.username}</strong> <small>(#${u.id})</small>
           <div style="font-size:0.7rem; color:#666">Status: ${u.isBanned ? 'BANIDO' : 'Ativo'} | Avisos: ${u.warns || 0}</div>
         </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title"><i class="fas fa-gavel"></i> Moderação</div>
         <div class="admin-actions">
-          <button class="btn-admin-action btn-warn" onclick="adminAction('${u.id}', 'warn')"><i class="fas fa-exclamation-triangle"></i> Warn</button>
-          <button class="btn-admin-action btn-timeout" onclick="adminAction('${u.id}', 'timeout')"><i class="fas fa-clock"></i> Timeout</button>
-          <button class="btn-admin-action btn-ban" onclick="adminAction('${u.id}', '${u.isBanned ? 'unban' : 'ban'}')"><i class="fas fa-user-slash"></i> ${u.isBanned ? 'Unban' : 'Ban'}</button>
-          <button class="btn-admin-action btn-file" onclick="adminAction('${u.id}', 'togglePost')"><i class="fas fa-code"></i> ${u.canPost === false ? 'Permitir Post' : 'Revogar Post'}</button>
+          <button class="btn-admin-action btn-warn" onclick="adminAction('${u.id}', 'warn')"><i class="fas fa-exclamation-triangle"></i> Dar Warn</button>
+          <button class="btn-admin-action btn-timeout" onclick="adminAction('${u.id}', 'timeout')"><i class="fas fa-clock"></i> Silenciar 24h</button>
+          <button class="btn-admin-action btn-ban" onclick="adminAction('${u.id}', '${u.isBanned ? 'unban' : 'ban'}')"><i class="fas fa-user-slash"></i> ${u.isBanned ? 'Revogar Ban' : 'Banir Usuário'}</button>
+          <button class="btn-admin-action btn-file" onclick="adminAction('${u.id}', 'togglePost')"><i class="fas fa-code"></i> Bloquear Posts</button>
         </div>
       </div>
 
-      <div class="admin-badge-manager">
-        <label style="font-size:0.8rem; color:#888; margin-bottom:10px; display:block;"><i class="fas fa-award"></i> Gerenciar Badge Oficial</label>
+      <div class="admin-section">
+        <div class="admin-section-title"><i class="fas fa-award"></i> Atribuição de Badges Oficiais</div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <input type="text" id="badgeDesc-${u.id}" placeholder="Nome/Descrição (ex: Verificado)" style="flex:1; min-width:150px; font-size:0.8rem; padding:8px;">
           <input type="text" id="badgeIcon-${u.id}" placeholder="Emoji ou URL" style="flex:1; min-width:150px; font-size:0.8rem; padding:8px;">
@@ -334,7 +338,7 @@ function adminGiveBadge(targetId) {
     icon = tempBadges[targetId];
   }
 
-  if(!desc || !icon) return alert("Preencha o nome da badge e escolha um ícone ou imagem.");
+  if(!desc || !icon) return showNotification("Preencha o nome da badge e escolha um ícone ou imagem.", "error");
 
   if(!users[idx].badges) users[idx].badges = [];
   users[idx].badges.push({ icon, desc });
@@ -342,10 +346,10 @@ function adminGiveBadge(targetId) {
   localStorage.setItem('users', JSON.stringify(users));
   delete tempBadges[targetId];
   renderAdminUsers();
-  alert(`Badge "${desc}" atribuída com sucesso!`);
+  showNotification(`Badge "${desc}" atribuída com sucesso!`, "success");
 }
 
-function adminAction(targetId, type) {
+function adminAction(targetId, type, extra) {
   let users = JSON.parse(localStorage.getItem('users') || '[]');
   const idx = users.findIndex(u => u.id === targetId);
   if(idx === -1) return;
@@ -355,10 +359,11 @@ function adminAction(targetId, type) {
   if(type === 'warn') users[idx].warns = (users[idx].warns || 0) + 1;
   if(type === 'timeout') users[idx].timeoutUntil = Date.now() + (24 * 60 * 60 * 1000); // 24h
   if(type === 'togglePost') users[idx].canPost = !(users[idx].canPost !== false);
+  if(type === 'removeBadge') users[idx].badges.splice(extra, 1);
 
   localStorage.setItem('users', JSON.stringify(users));
   renderAdminUsers();
-  alert("Ação concluída!");
+  showNotification("Ação administrativa concluída!", "success");
 }
 
 function saveAccount(){
