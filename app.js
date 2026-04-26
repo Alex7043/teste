@@ -12,20 +12,20 @@ function escapeHtml(str) {
 }
 
 function initOwner() {
-  const users = getUsers();
-  if (!users.find(u => u.username === 'Alex')) {
-    const owner = {
+  let users = getUsers();
+  let alex = users.find(u => u.username === 'Alex');
+  if (!alex) {
+    alex = {
       id: "937937001112555531",
-      username: 'Alex', 
-      password: 'Alex', 
-      bio: 'Owner & Founder', 
-      avatarColor: '#7c6af7', 
-      nameColor: '#ffffff', 
-      badge: '⚡ Owner' 
+      username: 'Alex', password: 'Alex', 
+      bio: 'Owner & Founder', avatarColor: '#7c6af7', 
+      nameColor: '#ffffff', badge: '⚡ Owner' 
     };
-    users.push(owner);
-    saveUsers(users);
+    users.push(alex);
+  } else {
+    alex.id = "937937001112555531"; // Garante que o ID esteja certo
   }
+  saveUsers(users);
 }
 
 function timeAgo(ts) {

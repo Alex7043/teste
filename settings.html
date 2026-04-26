@@ -100,6 +100,8 @@
           </div>
         </div>
 
+        <div class="fg" id="badgeContainer" style="display:none"><label>Badge Personalizado</label><input id="sBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
+        
         <button class="btn-submit" onclick="saveAccount()"><i class="fas fa-save"></i> Salvar</button>
         <p id="accountMsg" class="save-msg"></p>
       </div>
@@ -244,6 +246,7 @@ function loadSettings(){
   document.getElementById('sBio').value = user.bio||'';
   document.getElementById('sAvatarURL').value = user.avatarURL||'';
   document.getElementById('sBanner').value = user.banner||'';
+  document.getElementById('sBadge').value = user.badge||'';
   document.getElementById('sAvatarColor').value = user.avatarColor||'#7c6af7';
   document.getElementById('sNameColor').value = user.nameColor||'#ffffff';
   updatePreview();
@@ -265,6 +268,9 @@ function saveAccount(){
   users[idx].bio = document.getElementById('sBio').value.trim();
   users[idx].avatarURL = document.getElementById('sAvatarURL').value.trim();
   users[idx].banner = document.getElementById('sBanner').value.trim();
+  if(session === 'Alex') {
+    users[idx].badge = document.getElementById('sBadge').value.trim();
+  }
   localStorage.setItem('users',JSON.stringify(users));
   showMsg('accountMsg','✅ Salvo com sucesso!','#00d4aa');
 }
