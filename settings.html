@@ -100,8 +100,6 @@
           </div>
         </div>
 
-        <div class="fg" id="badgeContainer" style="display:none"><label>Badge Personalizado</label><input id="sBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
-        
         <button class="btn-submit" onclick="saveAccount()"><i class="fas fa-save"></i> Salvar</button>
         <p id="accountMsg" class="save-msg"></p>
       </div>
@@ -246,7 +244,6 @@ function loadSettings(){
   document.getElementById('sBio').value = user.bio||'';
   document.getElementById('sAvatarURL').value = user.avatarURL||'';
   document.getElementById('sBanner').value = user.banner||'';
-  document.getElementById('sBadge').value = user.badge||'';
   document.getElementById('sAvatarColor').value = user.avatarColor||'#7c6af7';
   document.getElementById('sNameColor').value = user.nameColor||'#ffffff';
   updatePreview();
@@ -254,21 +251,10 @@ function loadSettings(){
   document.getElementById('sAvatarColor').addEventListener('input', updatePreview);
   document.getElementById('sNameColor').addEventListener('input', updatePreview);
 
-  // Apenas o Alex (pelo ID) vê o campo de badge personalizado
-  if(user.id === "937937001112555531") document.getElementById('badgeContainer').style.display = 'flex';
-
   // Carrega status do discord
   if (user.discordUser) {
     document.getElementById('discordStatus').textContent = `Conectado como ${user.discordUser}`;
     document.getElementById('discordBox').style.opacity = '0.8';
-  }
-
-  function updatePreview(){
-    const av = document.getElementById('prevAv');
-    av.style.background = document.getElementById('sAvatarColor').value;
-    document.getElementById('prevAv').textContent = session.charAt(0).toUpperCase();
-    document.getElementById('prevName').style.color = document.getElementById('sNameColor').value;
-    document.getElementById('prevName').textContent = session;
   }
 }
 
@@ -279,9 +265,6 @@ function saveAccount(){
   users[idx].bio = document.getElementById('sBio').value.trim();
   users[idx].avatarURL = document.getElementById('sAvatarURL').value.trim();
   users[idx].banner = document.getElementById('sBanner').value.trim();
-  if(session === 'Alex') {
-    users[idx].badge = document.getElementById('sBadge').value.trim();
-  }
   localStorage.setItem('users',JSON.stringify(users));
   showMsg('accountMsg','✅ Salvo com sucesso!','#00d4aa');
 }

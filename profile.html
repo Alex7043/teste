@@ -230,7 +230,6 @@
           </div>
         </div>
       </div>
-      <div class="fg" id="editBadgeContainer" style="display:none"><label>Badge Personalizado</label><input id="editBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
       <button class="btn-submit" onclick="saveProfile()"><i class="fas fa-save"></i> Salvar Perfil</button>
     </div>
   </div>
@@ -257,8 +256,6 @@ function openEditModal(){
   document.getElementById('editBanner').value = user.banner||'';
   document.getElementById('editColor').value = user.avatarColor||'#7c6af7';
   document.getElementById('editNameColor').value = user.nameColor||'#ffffff';
-  document.getElementById('editBadge').value = user.badge||'';
-  if(session === 'Alex') document.getElementById('editBadgeContainer').style.display = 'flex';
   document.getElementById('editModal').classList.add('open');
 }
 function closeEditModal(){ document.getElementById('editModal').classList.remove('open'); }
@@ -273,9 +270,6 @@ function saveProfile(){
   users[idx].banner = document.getElementById('editBanner').value.trim();
   users[idx].avatarColor = document.getElementById('editColor').value;
   users[idx].nameColor = document.getElementById('editNameColor').value;
-  if(session === 'Alex') {
-    users[idx].badge = document.getElementById('editBadge').value.trim();
-  }
   localStorage.setItem('users',JSON.stringify(users));
   closeEditModal();
   renderProfile();
@@ -309,7 +303,7 @@ function renderProfile(){
   wrap.innerHTML = `
   <div class="profile-banner" ${banner?`style="background-image:url('${escapeHtml(banner)}');background-size:cover;background-position:center"`:''}></div>
     <div class="profile-header">
-      <div class="profile-av-wrap">
+      <div class="profile-av-wrap" title="UID: ${user.id}">
         <div class="profile-av" style="background:${avatarColor}">${avatarContent}</div>
       </div>
       <div class="profile-info">
