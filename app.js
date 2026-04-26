@@ -252,6 +252,11 @@ function initNavbar() {
     if (navAvatar) {
       const users = getUsers();
       const user  = users.find(u => u.username === session);
+      
+      // Esconde o botão do Discord se já estiver conectado
+      const btnDisc = document.getElementById('btnDiscordNav');
+      if (btnDisc && user?.discordUser) btnDisc.style.display = 'none';
+
       if (user?.avatarURL) { navAvatar.innerHTML = `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
       else { navAvatar.textContent = session.charAt(0).toUpperCase(); navAvatar.style.background = user?.avatarColor || '#7c6af7'; }
     }
