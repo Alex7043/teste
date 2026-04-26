@@ -1,31 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - ScriptShare</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Login — ScriptDrop</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
-<body>
-  <nav>
-    <a class="logo" href="index.html">🖥️ ScriptShare</a>
-    <div>
-      <a href="login.html">Login</a>
-      <a href="register.html">Registrar</a>
-    </div>
-  </nav>
+<body class="auth-page">
 
-  <main>
-    <div class="form-box">
-      <h2>Login</h2>
-      <input type="text" id="username" placeholder="Usuário" />
-      <input type="password" id="password" placeholder="Senha" />
-      <p id="error" class="error"></p>
-      <button onclick="login()">Entrar</button>
-      <p>Não tem conta? <a href="register.html">Registrar</a></p>
-    </div>
-  </main>
+<div class="auth-bg">
+  <div class="auth-orb orb1"></div>
+  <div class="auth-orb orb2"></div>
+</div>
 
-  <script src="app.js"></script>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">Script<span class="logo-accent">Drop</span></span>
+    </a>
+  </div>
+</nav>
+
+<main class="auth-main">
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <div class="auth-icon"><i class="fa fa-bolt"></i></div>
+      <h2>Bem-vindo de volta</h2>
+      <p>Entre na sua conta para postar scripts</p>
+    </div>
+    <div class="auth-card-body">
+      <div class="field-group">
+        <label><i class="fa fa-user"></i> Usuário</label>
+        <input type="text" id="username" placeholder="Seu usuário" autocomplete="off"/>
+      </div>
+      <div class="field-group">
+        <label><i class="fa fa-lock"></i> Senha</label>
+        <div class="input-wrap">
+          <input type="password" id="password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')login()"/>
+          <button class="eye-btn" onclick="togglePass('password',this)"><i class="fa fa-eye"></i></button>
+        </div>
+      </div>
+      <p id="error" class="error-msg"></p>
+      <button class="btn-primary btn-full" onclick="login()"><i class="fa fa-sign-in-alt"></i> Entrar</button>
+      <div class="auth-divider"><span>ou</span></div>
+      <p class="auth-switch">Não tem conta? <a href="register.html">Criar conta grátis →</a></p>
+    </div>
+  </div>
+</main>
+
+<script src="app.js"></script>
 </body>
 </html>

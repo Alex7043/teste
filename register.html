@@ -1,32 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Registrar - ScriptShare</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Registrar — ScriptDrop</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
-<body>
-  <nav>
-    <a class="logo" href="index.html">🖥️ ScriptShare</a>
-    <div>
-      <a href="login.html">Login</a>
-      <a href="register.html">Registrar</a>
-    </div>
-  </nav>
+<body class="auth-page">
 
-  <main>
-    <div class="form-box">
+<div class="auth-bg">
+  <div class="auth-orb orb1"></div>
+  <div class="auth-orb orb2"></div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">Script<span class="logo-accent">Drop</span></span>
+    </a>
+  </div>
+</nav>
+
+<main class="auth-main">
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <div class="auth-icon"><i class="fa fa-rocket"></i></div>
       <h2>Criar Conta</h2>
-      <input type="text" id="username" placeholder="Usuário" />
-      <input type="password" id="password" placeholder="Senha" />
-      <input type="password" id="confirm" placeholder="Confirmar Senha" />
-      <p id="error" class="error"></p>
-      <button onclick="register()">Registrar</button>
-      <p>Já tem conta? <a href="login.html">Login</a></p>
+      <p>Junte-se à comunidade e comece a postar</p>
     </div>
-  </main>
+    <div class="auth-card-body">
+      <div class="field-group">
+        <label><i class="fa fa-user"></i> Usuário</label>
+        <input type="text" id="username" placeholder="Escolha um usuário" autocomplete="off"/>
+      </div>
+      <div class="field-group">
+        <label><i class="fa fa-lock"></i> Senha</label>
+        <div class="input-wrap">
+          <input type="password" id="password" placeholder="Crie uma senha"/>
+          <button class="eye-btn" onclick="togglePass('password',this)"><i class="fa fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label><i class="fa fa-check-circle"></i> Confirmar Senha</label>
+        <div class="input-wrap">
+          <input type="password" id="confirm" placeholder="Repita a senha" onkeydown="if(event.key==='Enter')register()"/>
+          <button class="eye-btn" onclick="togglePass('confirm',this)"><i class="fa fa-eye"></i></button>
+        </div>
+      </div>
+      <p id="error" class="error-msg"></p>
+      <button class="btn-primary btn-full" onclick="register()"><i class="fa fa-user-plus"></i> Criar Conta</button>
+      <div class="auth-divider"><span>ou</span></div>
+      <p class="auth-switch">Já tem conta? <a href="login.html">Fazer login →</a></p>
+    </div>
+  </div>
+</main>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

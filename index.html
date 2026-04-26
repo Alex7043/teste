@@ -1,36 +1,138 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ScriptShare</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>ScriptDrop — Scripts Premium</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
-  <nav>
-    <span class="logo">🖥️ ScriptShare</span>
-    <div id="nav-auth">
-      <a href="login.html">Login</a>
-      <a href="register.html">Registrar</a>
-    </div>
-    <div id="nav-user" style="display:none">
-      <span id="nav-username"></span>
-      <button onclick="logout()">Sair</button>
-    </div>
-  </nav>
 
-  <main>
-    <div id="post-form" style="display:none">
-      <h2>Novo Post</h2>
-      <input type="text" id="post-title" placeholder="Título do script" />
-      <textarea id="post-code" placeholder="Cole seu script aqui..."></textarea>
-      <button onclick="submitPost()">Publicar</button>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">Script<span class="logo-accent">Drop</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active"><i class="fa fa-home"></i> Home</a>
+      <a href="index.html#feed" class="nav-link"><i class="fa fa-code"></i> Scripts</a>
     </div>
+    <div id="nav-auth" class="nav-actions">
+      <a href="login.html" class="btn-ghost">Login</a>
+      <a href="register.html" class="btn-primary">Registrar</a>
+    </div>
+    <div id="nav-user" class="nav-actions" style="display:none">
+      <button class="btn-post" onclick="openModal()"><i class="fa fa-plus"></i> Postar Script</button>
+      <div class="avatar-wrap" onclick="toggleDropdown()">
+        <div class="avatar" id="nav-avatar"></div>
+        <span id="nav-username"></span>
+        <i class="fa fa-chevron-down" style="font-size:11px;color:#888"></i>
+        <div class="dropdown" id="dropdown">
+          <a onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
 
-    <h2>Posts</h2>
-    <div id="feed"></div>
-  </main>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="badge-dot"></span> Plataforma #1 de Scripts</div>
+    <h1 class="hero-title">Descubra Scripts<br/><span class="gradient-text">Incríveis</span></h1>
+    <p class="hero-sub">Compartilhe, explore e copie scripts da comunidade.<br/>Totalmente grátis, para sempre.</p>
+    <div class="hero-btns">
+      <a href="#feed" class="btn-primary btn-lg"><i class="fa fa-fire"></i> Ver Scripts</a>
+      <a href="register.html" class="btn-ghost btn-lg"><i class="fa fa-rocket"></i> Começar Grátis</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span id="stat-scripts">0</span><small>Scripts</small></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span id="stat-users">0</span><small>Usuários</small></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span><span class="online-dot"></span>Online</span><small>Agora</small></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="code-window">
+      <div class="window-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="window-title">script.lua</span>
+      </div>
+      <pre class="window-code"><span class="c-purple">local</span> <span class="c-blue">player</span> = game.Players.LocalPlayer
+<span class="c-purple">local</span> <span class="c-blue">char</span> = player.Character
 
-  <script src="app.js"></script>
+<span class="c-green">-- Speed hack</span>
+<span class="c-blue">char</span>.Humanoid.WalkSpeed = <span class="c-orange">100</span>
+<span class="c-blue">char</span>.Humanoid.JumpPower = <span class="c-orange">200</span>
+
+<span class="c-purple">while</span> <span class="c-orange">true</span> <span class="c-purple">do</span>
+  wait(<span class="c-orange">0.1</span>)
+<span class="c-purple">end</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- FEED -->
+<section class="feed-section" id="feed">
+  <div class="feed-inner">
+    <div class="feed-header">
+      <div>
+        <h2 class="section-title"><i class="fa fa-fire" style="color:#ff6b35"></i> Scripts em Alta</h2>
+        <p class="section-sub">Os scripts mais recentes da comunidade</p>
+      </div>
+      <div class="feed-filters">
+        <button class="filter-btn active" onclick="filterPosts('all', this)">Todos</button>
+        <button class="filter-btn" onclick="filterPosts('recent', this)">Recentes</button>
+      </div>
+    </div>
+    <div id="feed-grid"></div>
+  </div>
+</section>
+
+<!-- MODAL POSTAR -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fa fa-code"></i> Novo Script</h3>
+      <button class="modal-close" onclick="closeModal()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label>Título do Script</label>
+        <input type="text" id="post-title" placeholder="Ex: Speed Hack — Blox Fruits"/>
+      </div>
+      <div class="field-group">
+        <label>Jogo / Categoria</label>
+        <input type="text" id="post-game" placeholder="Ex: Blox Fruits, Arsenal, Universal..."/>
+      </div>
+      <div class="field-group">
+        <label>Código do Script</label>
+        <textarea id="post-code" placeholder="Cole seu script aqui..."></textarea>
+      </div>
+      <div class="field-group">
+        <label>Descrição <span style="color:#555">(opcional)</span></label>
+        <input type="text" id="post-desc" placeholder="Descreva o que o script faz..."/>
+      </div>
+      <button class="btn-primary btn-full" onclick="submitPost()"><i class="fa fa-upload"></i> Publicar Script</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="logo-text">⚡ Script<span class="logo-accent">Drop</span></span>
+    <p>© 2025 ScriptDrop — Feito com 💜 pela comunidade</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
