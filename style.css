@@ -324,3 +324,35 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 
 /* Empty Feed State */
 .feed-empty { grid-column: 1 / -1; text-align: center; padding: 100px 0; color: #444; font-size: 1.1rem; }
+
+/* ---- Admin Panel & Official Badges ---- */
+.admin-badge-icon {
+  width: 20px;
+  height: 20px;
+  cursor: help;
+  transition: transform 0.2s;
+}
+.admin-badge-icon:hover { transform: scale(1.2); }
+
+.admin-user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.admin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-admin-action {
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  color: #fff;
+}
+.btn-ban { background: #ff4757; }
+.btn-warn { background: #ffa502; }
+.btn-timeout { background: #57606f; }
+.btn-badge { background: #7c6af7; }

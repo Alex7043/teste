@@ -33,7 +33,16 @@ function register() {
   const users = getUsers();
   if (users.find(u => u.username === username)) return (error.textContent = 'Usuário já existe.');
 
-  users.push({ id: Math.floor(Math.random() * 1000000).toString(), username, password });
+  users.push({ 
+    id: Math.floor(Math.random() * 1000000).toString(), 
+    username, 
+    password,
+    badges: [], // Array de {icon: '', desc: ''}
+    isBanned: false,
+    canPost: true,
+    warns: 0,
+    timeoutUntil: 0
+  });
   saveUsers(users);
   setSession(username);
   window.location.href = './';
@@ -85,7 +94,13 @@ function submitPost() {
   const desc  = document.getElementById('mDesc')?.value.trim();
   const tags  = document.getElementById('mTags')?.value.split(',').map(t => t.trim()).filter(Boolean);
 
+  const session = getSession();
+  const user = getUsers().find(u => u.username === session);
+
   if (!title || !code) return alert('Preencha o título e o script.');
+  if (user?.isBanned) return alert('Sua conta está banida.');
+  if (!user?.canPost) return alert('Seu acesso para publicar scripts foi revogado.');
+  if (user?.timeoutUntil > Date.now()) return alert('Você está em timeout.');
 
   const posts = getPosts();
   posts.unshift({

@@ -294,10 +294,17 @@ function renderProfile(){
   const uid = user.id || 'N/A';
   const totalViews = userPosts.reduce((a,p)=>a+(p.views||0),0);
 
-  // Sistema de múltiplas badges (Owner + Discord)
+  // Sistema de múltiplas badges Oficiais
   let badgesHtml = '';
   if (uid === "937937001112555531") badgesHtml += '<span class="profile-badge">⚡ Owner</span>';
-  if (user.discordUser) badgesHtml += '<span class="discord-badge"><i class="fab fa-discord"></i> Conectado</span>';
+  if (user.discordUser) badgesHtml += '<div class="discord-badge" title="Badge ganha ao conectar sua conta com o Bot oficial!"><i class="fab fa-discord"></i></div>';
+  
+  // Badges criadas pelo Admin
+  if (user.badges && user.badges.length) {
+    user.badges.forEach(b => {
+      badgesHtml += `<div class="uid-tag" title="${escapeHtml(b.desc)}" style="color:var(--primary)">${b.icon}</div>`;
+    });
+  }
 
   const avatarContent = user.avatarURL 
     ? `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;object-fit:cover">`

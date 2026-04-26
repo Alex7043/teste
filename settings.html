@@ -71,6 +71,7 @@
       <button class="snav active" onclick="showTab('account',this)"><i class="fas fa-user"></i> Conta</button>
       <button class="snav" onclick="showTab('appearance',this)"><i class="fas fa-paint-brush"></i> Aparência</button>
       <button class="snav" onclick="showTab('security',this)"><i class="fas fa-shield-alt"></i> Segurança</button>
+      <button class="snav" id="adminTabBtn" onclick="showTab('admin',this)" style="display:none; color:#ffd700"><i class="fas fa-crown"></i> Painel Owner</button>
       <button class="snav" onclick="showTab('danger',this)" style="color:#ff6b6b"><i class="fas fa-trash"></i> Zona de Perigo</button>
     </div>
   </div>
@@ -155,6 +156,18 @@
         <div class="fg"><label>Confirmar Nova Senha</label><input type="password" id="sConfPass" placeholder="Repita a nova senha"/></div>
         <button class="btn-submit" onclick="changePassword()"><i class="fas fa-key"></i> Alterar Senha</button>
         <p id="secMsg" class="save-msg"></p>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="stab" id="tab-admin">
+      <h2 class="stab-title" style="color:#ffd700"><i class="fas fa-tools"></i> Gerenciamento Global</h2>
+      <div class="settings-card">
+        <div class="fg">
+          <label>Buscar Usuário (ID ou Nome)</label>
+          <input type="text" id="adminSearch" placeholder="Digite para buscar..." oninput="renderAdminUsers()"/>
+        </div>
+        <div id="adminUserList"></div>
       </div>
     </div>
 
@@ -249,6 +262,59 @@ function loadSettings(){
     document.getElementById('discordStatus').textContent = `Conectado como ${user.discordUser}`;
     document.getElementById('discordBox').style.opacity = '0.8';
   }
+
+  if(user.id === "937937001112555531") {
+    document.getElementById('adminTabBtn').style.display = 'flex';
+    renderAdminUsers();
+  }
+}
+
+function renderAdminUsers() {
+  const q = document.getElementById('adminSearch').value.toLowerCase();
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const list = document.getElementById('adminUserList');
+  
+  const filtered = users.filter(u => u.id.includes(q) || u.username.toLowerCase().includes(q));
+  
+  list.innerHTML = filtered.map(u => `
+    <div class="admin-user-row">
+      <div>
+        <strong>${u.username}</strong> <small>(#${u.id})</small>
+        <div style="font-size:0.7rem; color:#666">Status: ${u.isBanned ? 'BANIDO' : 'Ativo'} | Avisos: ${u.warns || 0}</div>
+      </div>
+      <div class="admin-actions">
+        <button class="btn-admin-action btn-warn" onclick="adminAction('${u.id}', 'warn')">Warn</button>
+        <button class="btn-admin-action btn-timeout" onclick="adminAction('${u.id}', 'timeout')">Timeout</button>
+        <button class="btn-admin-action btn-ban" onclick="adminAction('${u.id}', '${u.isBanned ? 'unban' : 'ban'}')">${u.isBanned ? 'Unban' : 'Ban'}</button>
+        <button class="btn-admin-action btn-badge" onclick="adminAction('${u.id}', 'giveBadge')">Dar Badge</button>
+        <button class="btn-admin-action btn-file" onclick="adminAction('${u.id}', 'togglePost')">${u.canPost === false ? 'Permitir Post' : 'Revogar Post'}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function adminAction(targetId, type) {
+  let users = JSON.parse(localStorage.getItem('users') || '[]');
+  const idx = users.findIndex(u => u.id === targetId);
+  if(idx === -1) return;
+
+  if(type === 'ban') users[idx].isBanned = true;
+  if(type === 'unban') users[idx].isBanned = false;
+  if(type === 'warn') users[idx].warns = (users[idx].warns || 0) + 1;
+  if(type === 'timeout') users[idx].timeoutUntil = Date.now() + (24 * 60 * 60 * 1000); // 24h
+  if(type === 'togglePost') users[idx].canPost = !(users[idx].canPost !== false);
+  if(type === 'giveBadge') {
+    const icon = prompt("Ícone (HTML/FontAwesome ou Emoji):", "⚡");
+    const desc = prompt("Descrição (Como ganha):", "Membro Especial");
+    if(icon && desc) {
+      if(!users[idx].badges) users[idx].badges = [];
+      users[idx].badges.push({ icon, desc });
+    }
+  }
+
+  localStorage.setItem('users', JSON.stringify(users));
+  renderAdminUsers();
+  alert("Ação concluída!");
 }
 
 function saveAccount(){
