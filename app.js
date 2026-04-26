@@ -20,6 +20,18 @@ function timeAgo(ts) {
   return Math.floor(diff / 86400) + 'd atrás';
 }
 
+// ---- Force Owner ID ----
+function fixOwnerId() {
+  let users = getUsers();
+  let alex = users.find(u => u.username.toLowerCase() === 'alex');
+  if (alex && alex.id !== "937937001112555531") {
+    alex.id = "937937001112555531";
+    alex.canPost = true;
+    alex.isBanned = false;
+    saveUsers(users);
+  }
+}
+
 // ---- Auth ----
 function register() {
   const username = document.getElementById('username').value.trim();
@@ -288,6 +300,7 @@ function initParticles() {
 
 // ---- Init ----
 (function init() {
+  fixOwnerId();
   initNavbar();
   initParticles();
   renderFeed();

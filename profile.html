@@ -294,17 +294,20 @@ function renderProfile(){
   const uid = user.id || 'N/A';
   const totalViews = userPosts.reduce((a,p)=>a+(p.views||0),0);
 
-  // Sistema de múltiplas badges Oficiais
-  let badgesHtml = '';
-  if (uid === "937937001112555531") badgesHtml += '<span class="profile-badge">⚡ Owner</span>';
-  if (user.discordUser) badgesHtml += '<div class="discord-badge" title="Badge ganha ao conectar sua conta com o Bot oficial!"><i class="fab fa-discord"></i></div>';
-  
-  // Badges criadas pelo Admin
-  if (user.badges && user.badges.length) {
+  // Sistema de Badges Oficiais (Embaixo do nome)
+  let badgesHtml = '<div class="badges-row">';
+  if (uid === "937937001112555531") {
+    badgesHtml += `<div class="badge-item" title="Owner & Founder">⚡</div>`;
+  }
+  if (user.discordUser) {
+    badgesHtml += `<div class="badge-item" style="color:#5865F2" title="Usuário verificado pelo Discord"><i class="fab fa-discord"></i></div>`;
+  }
+  if (user.badges) {
     user.badges.forEach(b => {
-      badgesHtml += `<div class="uid-tag" title="${escapeHtml(b.desc)}" style="color:var(--primary)">${b.icon}</div>`;
+      badgesHtml += `<div class="badge-item" title="${escapeHtml(b.desc)}">${b.icon}</div>`;
     });
   }
+  badgesHtml += '</div>';
 
   const avatarContent = user.avatarURL 
     ? `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;object-fit:cover">`
@@ -319,9 +322,9 @@ function renderProfile(){
       <div class="profile-info">
         <div class="profile-name-row">
           <h1 class="profile-name" style="color:${nameColor}">${escapeHtml(targetUser)}</h1>
-          <div class="uid-tag" title="User ID: ${uid}"><i class="fas fa-fingerprint"></i> #${uid}</div>
-          ${badgesHtml}
+          <div class="uid-tag" title="User ID: ${uid}"><i class="fas fa-tag"></i> #${uid}</div>
         </div>
+        ${badgesHtml}
         <p class="profile-bio">${escapeHtml(bio)}</p>
         <div class="profile-stats-row">
           <div class="pstat"><span>${userPosts.length}</span><small>Scripts</small></div>

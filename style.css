@@ -325,6 +325,42 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 /* Empty Feed State */
 .feed-empty { grid-column: 1 / -1; text-align: center; padding: 100px 0; color: #444; font-size: 1.1rem; }
 
+/* ---- UID Tag Style ---- */
+.uid-tag {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: help;
+}
+.uid-tag i { font-size: 0.7rem; color: #555; }
+
+/* ---- Official Badges (Discord Style) ---- */
+.badges-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.badge-item {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  position: relative;
+  font-size: 1rem;
+}
+
+.badge-item:hover { transform: scale(1.1); }
+
 /* ---- Admin Panel & Official Badges ---- */
 .admin-badge-icon {
   width: 20px;

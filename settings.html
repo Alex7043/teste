@@ -258,12 +258,9 @@ function loadSettings(){
   document.getElementById('sNameColor').addEventListener('input', updatePreview);
 
   // Carrega status do discord
-  if (user.discordUser) {
-    document.getElementById('discordStatus').textContent = `Conectado como ${user.discordUser}`;
-    document.getElementById('discordBox').style.opacity = '0.8';
-  }
+  const alexId = "937937001112555531";
 
-  if(user.id === "937937001112555531") {
+  if(user.id === alexId || user.username.toLowerCase() === 'alex') {
     document.getElementById('adminTabBtn').style.display = 'flex';
     renderAdminUsers();
   }
