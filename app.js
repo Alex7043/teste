@@ -86,7 +86,7 @@ function connectDiscord() {
   const session = getSession();
   if (!session) return window.location.href = 'login';
   
-  const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175&permissions=8&integration_type=1&scope=bot";
+  const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175";
   window.open(botLink, '_blank'); // Abre o link do seu bot
   
   const discordName = prompt("Após adicionar o bot, digite seu usuário do Discord (ex: alex_oficial):");
@@ -96,17 +96,17 @@ function connectDiscord() {
     if (idx !== -1) {
       users[idx].discordUser = discordName;
       
-      // Enviar Webhook para o Canal 1498076463302447104
-      const WEBHOOK_URL = "https://discord.com/api/webhooks/1498078416275116243/s_8PX4V6wIA9a56O4-cVjlDFtr-Y_LI5aRqQITa--2v4yO743cQ5ffPqu1XbZvNeDkVK"; // Cole aqui a URL do Webhook do canal 1498076463302447104
+      // Webhook para o Canal 1498076463302447104
+      const WEBHOOK_URL = "https://discord.com/api/webhooks/1498078416275116243/s_8PX4V6wIA9a56O4-cVjlDFtr-Y_LI5aRqQITa--2v4yO743cQ5ffPqu1XbZvNeDkVK"; 
       fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content: `🔔 **Nova Conexão Realizada!**\nUsuário: <@${discordName}>`,
+          content: `🔔 **Nova Conexão!** Usuário: <@${discordName}>`,
           embeds: [{
-            title: "🛡️ Badge Oficial Recebida",
-            description: `O usuário **${session}** (UID: ${users[idx].id}) vinculou sua conta ao Discord e recebeu a badge oficial da comunidade!`,
-            color: 0x5865F2,
+            title: "🛡️ Conexão de Conta & Badge Atribuída",
+            description: `O usuário **${session}** vinculou sua conta ao bot e recebeu a badge oficial!`,
+            color: Math.floor(Math.random() * 16777215), // Cor aleatória no embed
             thumbnail: { url: "https://cdn-icons-png.flaticon.com/512/5968/5968756.png" }, // Ícone do Discord
             fields: [
               { name: "✨ Badge", value: "🔹 Membro Discord", inline: true },
@@ -259,7 +259,6 @@ function initNavbar() {
   const logged   = document.getElementById('nav-logged');
   const navName  = document.getElementById('navName');
   const navAvatar= document.getElementById('navAvatar');
-  const btnDiscord = document.getElementById('btnDiscordNav');
 
   if (!guest || !logged) return;
 
@@ -270,11 +269,6 @@ function initNavbar() {
     if (navAvatar) {
       const users = getUsers();
       const user  = users.find(u => u.username === session);
-      
-      if (btnDiscord) {
-        btnDiscord.style.display = user?.discordUser ? 'none' : 'flex';
-      }
-
       if (user?.avatarURL) { navAvatar.innerHTML = `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
       else { navAvatar.textContent = session.charAt(0).toUpperCase(); navAvatar.style.background = user?.avatarColor || '#7c6af7'; }
     }
