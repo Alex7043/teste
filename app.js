@@ -11,23 +11,6 @@ function escapeHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function initOwner() {
-  let users = getUsers();
-  let alex = users.find(u => u.username === 'Alex');
-  if (!alex) {
-    alex = {
-      id: "937937001112555531",
-      username: 'Alex', password: 'Alex', 
-      bio: 'Owner & Founder', avatarColor: '#7c6af7', 
-      nameColor: '#ffffff', badge: '⚡ Owner' 
-    };
-    users.push(alex);
-  } else {
-    alex.id = "937937001112555531"; // Garante que o ID esteja certo
-  }
-  saveUsers(users);
-}
-
 function timeAgo(ts) {
   if (!ts) return '';
   const diff = Math.floor((Date.now() - ts) / 1000);
@@ -330,7 +313,6 @@ function initParticles() {
 
 // ---- Init ----
 (function init() {
-  initOwner();
   initNavbar();
   initParticles();
   renderFeed();

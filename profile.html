@@ -293,7 +293,6 @@ function renderProfile(){
   const banner = user.banner||'';
   const bio = user.bio||'Sem bio ainda.';
   const badge = user.badge||'';
-  const uid = user.id || 'N/A';
   const discord = user.discordUser||'';
   const totalViews = userPosts.reduce((a,p)=>a+(p.views||0),0);
 
@@ -304,7 +303,7 @@ function renderProfile(){
   wrap.innerHTML = `
   <div class="profile-banner" ${banner?`style="background-image:url('${escapeHtml(banner)}');background-size:cover;background-position:center"`:''}></div>
     <div class="profile-header">
-      <div class="profile-av-wrap" title="UID: ${uid}" onclick="console.log('User ID:', '${uid}')">
+      <div class="profile-av-wrap">
         <div class="profile-av" style="background:${avatarColor}">${avatarContent}</div>
       </div>
       <div class="profile-info">
