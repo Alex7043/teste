@@ -126,8 +126,12 @@ nav {
 
 .hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: #fff; }
 .hero p { color: #888; margin-bottom: 25px; }
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
 
-.hero-btns { display: flex; justify-content: center; gap: 15px; }
+.hero-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
 
 .btn-primary {
   background: #7c6af7;
@@ -152,10 +156,11 @@ nav {
   justify-content: center;
   gap: 40px;
   padding: 20px;
-  background: #161616;
+  background: rgba(22, 22, 22, 0.5);
   border-top: 1px solid #2a2a2a;
   border-bottom: 1px solid #2a2a2a;
   margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
 .stat-item { text-align: center; }
@@ -164,15 +169,15 @@ nav {
 
 /* ---- Main Layout ---- */
 main {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px 60px;
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 30px;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 950px) {
   main { grid-template-columns: 1fr; }
 }
 
@@ -212,6 +217,10 @@ main {
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
+}
+
+.ftab:hover {
+  border-color: #7c6af7;
 }
 
 .ftab.active {
@@ -257,6 +266,39 @@ main {
 .pc-title { font-weight: bold; margin-bottom: 5px; color: #eee; }
 .pc-game { font-size: 0.8rem; color: #7c6af7; }
 
+/* ---- Auth Forms (Login/Register) ---- */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 20px;
+}
+
+.form-box {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-box h2 { color: #fff; text-align: center; margin-bottom: 10px; }
+.form-box input {
+  background: #0f0f0f;
+  border: 1px solid #333;
+  padding: 12px;
+  border-radius: 8px;
+  color: #fff;
+  outline: none;
+}
+.form-box button { background: #7c6af7; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+.error-msg { color: #ff5555; font-size: 0.85rem; text-align: center; }
+
 /* ---- Sidebar ---- */
 .sidebar-section {
   background: #1a1a1a;
@@ -277,8 +319,9 @@ main {
   font-size: 0.9rem;
 }
 
-.ri-title { color: #ccc; }
+.ri-title { color: #ccc; font-weight: 500; }
 .ri-game { color: #555; font-size: 0.75rem; }
+.recent-item:hover .ri-title { color: #7c6af7; }
 
 .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
 .tag-chip {
@@ -309,15 +352,16 @@ main {
   background: #1a1a1a;
   width: 90%;
   max-width: 600px;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
   border-radius: 12px;
   padding: 30px;
   border: 1px solid #333;
+  position: relative;
 }
 
 .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
-.close-btn { background: none; border: none; color: #555; font-size: 1.5rem; cursor: pointer; }
+.close-btn { background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer; }
 
 .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
 .form-group label { font-size: 0.85rem; color: #777; }
