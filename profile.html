@@ -260,6 +260,19 @@ function openEditModal(){
 }
 function closeEditModal(){ document.getElementById('editModal').classList.remove('open'); }
 
+function handleFile(input, targetId) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 15 * 1024 * 1024) { // Limite de 15MB
+    showNotification("Arquivo muito grande! Máximo de 15MB permitido.", "error");
+    input.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => { document.getElementById(targetId).value = e.target.result; };
+  reader.readAsDataURL(file);
+}
+
 function saveProfile(){
   const session = localStorage.getItem('session');
   const users = JSON.parse(localStorage.getItem('users')||'[]');
@@ -270,9 +283,16 @@ function saveProfile(){
   users[idx].banner = document.getElementById('editBanner').value.trim();
   users[idx].avatarColor = document.getElementById('editColor').value;
   users[idx].nameColor = document.getElementById('editNameColor').value;
-  localStorage.setItem('users',JSON.stringify(users));
-  closeEditModal();
-  renderProfile();
+  users[idx].profileMusic = document.getElementById('editMusic').value.trim();
+
+  try {
+    localStorage.setItem('users', JSON.stringify(users));
+    closeEditModal();
+    renderProfile();
+    showNotification("Perfil atualizado!");
+  } catch (e) {
+    showNotification("Erro: O arquivo é muito pesado para o armazenamento do navegador. Tente um arquivo menor ou use uma URL.", "error");
+  }
 }
 
 function renderProfile(){

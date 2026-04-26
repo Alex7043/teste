@@ -211,8 +211,8 @@ function showTab(name, btn){
 function handleFile(input, targetId) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 1024 * 1024) {
-    showNotification("Arquivo muito grande! Escolha uma imagem com menos de 1MB.", "error");
+  if (file.size > 15 * 1024 * 1024) { // 15MB
+    showNotification("Arquivo muito grande! Máximo de 15MB permitido.", "error");
     input.value = "";
     return;
   }
@@ -396,8 +396,13 @@ function saveAccount(){
   users[idx].avatarURL = document.getElementById('sAvatarURL').value.trim();
   users[idx].banner = document.getElementById('sBanner').value.trim();
   users[idx].profileMusic = document.getElementById('sMusic').value.trim();
-  localStorage.setItem('users',JSON.stringify(users));
-  showMsg('accountMsg','✅ Salvo com sucesso!','#00d4aa');
+  try {
+    localStorage.setItem('users', JSON.stringify(users));
+    showMsg('accountMsg', '✅ Salvo com sucesso!', '#00d4aa');
+    showNotification("Configurações da conta salvas!");
+  } catch (e) {
+    showNotification("Erro: O arquivo é muito pesado para o armazenamento do navegador. Use uma URL.", "error");
+  }
 }
 
 function saveAppearance(){
