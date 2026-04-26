@@ -265,6 +265,8 @@ function loadSettings(){
   }
 }
 
+let tempBadges = {}; // Armazena temporariamente GIFs/Imagens das badges antes de salvar
+
 function renderAdminUsers() {
   const q = document.getElementById('adminSearch').value.toLowerCase();
   const users = JSON.parse(localStorage.getItem('users') || '[]');
@@ -274,19 +276,73 @@ function renderAdminUsers() {
   
   list.innerHTML = filtered.map(u => `
     <div class="admin-user-row">
-      <div>
-        <strong>${u.username}</strong> <small>(#${u.id})</small>
-        <div style="font-size:0.7rem; color:#666">Status: ${u.isBanned ? 'BANIDO' : 'Ativo'} | Avisos: ${u.warns || 0}</div>
+      <div class="admin-user-info">
+        <div>
+          <strong>${u.username}</strong> <small>(#${u.id})</small>
+          <div style="font-size:0.7rem; color:#666">Status: ${u.isBanned ? 'BANIDO' : 'Ativo'} | Avisos: ${u.warns || 0}</div>
+        </div>
+        <div class="admin-actions">
+          <button class="btn-admin-action btn-warn" onclick="adminAction('${u.id}', 'warn')"><i class="fas fa-exclamation-triangle"></i> Warn</button>
+          <button class="btn-admin-action btn-timeout" onclick="adminAction('${u.id}', 'timeout')"><i class="fas fa-clock"></i> Timeout</button>
+          <button class="btn-admin-action btn-ban" onclick="adminAction('${u.id}', '${u.isBanned ? 'unban' : 'ban'}')"><i class="fas fa-user-slash"></i> ${u.isBanned ? 'Unban' : 'Ban'}</button>
+          <button class="btn-admin-action btn-file" onclick="adminAction('${u.id}', 'togglePost')"><i class="fas fa-code"></i> ${u.canPost === false ? 'Permitir Post' : 'Revogar Post'}</button>
+        </div>
       </div>
-      <div class="admin-actions">
-        <button class="btn-admin-action btn-warn" onclick="adminAction('${u.id}', 'warn')">Warn</button>
-        <button class="btn-admin-action btn-timeout" onclick="adminAction('${u.id}', 'timeout')">Timeout</button>
-        <button class="btn-admin-action btn-ban" onclick="adminAction('${u.id}', '${u.isBanned ? 'unban' : 'ban'}')">${u.isBanned ? 'Unban' : 'Ban'}</button>
-        <button class="btn-admin-action btn-badge" onclick="adminAction('${u.id}', 'giveBadge')">Dar Badge</button>
-        <button class="btn-admin-action btn-file" onclick="adminAction('${u.id}', 'togglePost')">${u.canPost === false ? 'Permitir Post' : 'Revogar Post'}</button>
+
+      <div class="admin-badge-manager">
+        <label style="font-size:0.8rem; color:#888; margin-bottom:10px; display:block;"><i class="fas fa-award"></i> Gerenciar Badge Oficial</label>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <input type="text" id="badgeDesc-${u.id}" placeholder="Nome/Descrição (ex: Verificado)" style="flex:1; min-width:150px; font-size:0.8rem; padding:8px;">
+          <input type="text" id="badgeIcon-${u.id}" placeholder="Emoji ou URL" style="flex:1; min-width:150px; font-size:0.8rem; padding:8px;">
+          
+          <input type="file" id="badgeFile-${u.id}" accept="image/*,image/gif" style="display:none" onchange="processBadgeFile('${u.id}', this)">
+          <button class="btn-admin-action btn-file" onclick="document.getElementById('badgeFile-${u.id}').click()">
+            <i class="fas fa-file-import"></i> GIF/Img
+          </button>
+          
+          <button class="btn-admin-action btn-badge" onclick="adminGiveBadge('${u.id}')">
+            <i class="fas fa-plus-circle"></i> Atribuir Badge
+          </button>
+        </div>
+        <div id="badgeStatus-${u.id}" style="font-size:0.7rem; margin-top:5px; color:var(--primary)"></div>
       </div>
     </div>
   `).join('');
+}
+
+function processBadgeFile(uid, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    tempBadges[uid] = e.target.result;
+    document.getElementById(`badgeStatus-${uid}`).innerHTML = `<i class="fas fa-check"></i> Imagem carregada: ${file.name}`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function adminGiveBadge(targetId) {
+  let users = JSON.parse(localStorage.getItem('users') || '[]');
+  const idx = users.findIndex(u => u.id === targetId);
+  if(idx === -1) return;
+
+  const desc = document.getElementById(`badgeDesc-${targetId}`).value.trim();
+  let icon = document.getElementById(`badgeIcon-${targetId}`).value.trim();
+  
+  // Se tiver um arquivo carregado, usa ele em vez do texto
+  if (tempBadges[targetId]) {
+    icon = tempBadges[targetId];
+  }
+
+  if(!desc || !icon) return alert("Preencha o nome da badge e escolha um ícone ou imagem.");
+
+  if(!users[idx].badges) users[idx].badges = [];
+  users[idx].badges.push({ icon, desc });
+
+  localStorage.setItem('users', JSON.stringify(users));
+  delete tempBadges[targetId];
+  renderAdminUsers();
+  alert(`Badge "${desc}" atribuída com sucesso!`);
 }
 
 function adminAction(targetId, type) {
@@ -299,14 +355,6 @@ function adminAction(targetId, type) {
   if(type === 'warn') users[idx].warns = (users[idx].warns || 0) + 1;
   if(type === 'timeout') users[idx].timeoutUntil = Date.now() + (24 * 60 * 60 * 1000); // 24h
   if(type === 'togglePost') users[idx].canPost = !(users[idx].canPost !== false);
-  if(type === 'giveBadge') {
-    const icon = prompt("Ícone (HTML/FontAwesome ou Emoji):", "⚡");
-    const desc = prompt("Descrição (Como ganha):", "Membro Especial");
-    if(icon && desc) {
-      if(!users[idx].badges) users[idx].badges = [];
-      users[idx].badges.push({ icon, desc });
-    }
-  }
 
   localStorage.setItem('users', JSON.stringify(users));
   renderAdminUsers();
