@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Configurações — ScriptDrop</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="stylesheet" href="style.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nl"><i class="fas fa-home"></i> Home</a>
+    </div>
+    <div class="nav-right">
+      <div id="nav-guest" class="nav-auth">
+        <a href="login.html" class="btn-ghost-sm">Entrar</a>
+        <a href="register.html" class="btn-primary-sm">Registrar</a>
+      </div>
+      <div id="nav-logged" class="nav-user-area" style="display:none">
+        <div class="nav-avatar-wrap" id="navAvatarWrap">
+          <div class="nav-avatar" id="navAvatar"></div>
+          <span id="navName"></span>
+          <i class="fas fa-chevron-down nav-chev"></i>
+          <div class="nav-dropdown" id="navDropdown">
+            <a href="profile.html"><i class="fas fa-user"></i> Meu Perfil</a>
+            <a href="settings.html" class="active"><i class="fas fa-cog"></i> Configurações</a>
+            <div class="dd-divider"></div>
+            <a onclick="logout()" style="color:#ff6b6b;cursor:pointer"><i class="fas fa-sign-out-alt"></i> Sair</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="settings-wrap" id="settingsWrap">
+  <div class="settings-sidebar">
+    <div class="settings-nav">
+      <button class="snav active" onclick="showTab('account',this)"><i class="fas fa-user"></i> Conta</button>
+      <button class="snav" onclick="showTab('appearance',this)"><i class="fas fa-paint-brush"></i> Aparência</button>
+      <button class="snav" onclick="showTab('security',this)"><i class="fas fa-shield-alt"></i> Segurança</button>
+      <button class="snav" onclick="showTab('danger',this)" style="color:#ff6b6b"><i class="fas fa-trash"></i> Zona de Perigo</button>
+    </div>
+  </div>
+  <div class="settings-content">
+
+    <!-- ACCOUNT -->
+    <div class="stab active" id="tab-account">
+      <h2 class="stab-title"><i class="fas fa-user"></i> Informações da Conta</h2>
+      <div class="settings-card">
+        <div class="fg"><label>Bio</label><input id="sBio" placeholder="Fale sobre você..."/></div>
+        <div class="fg"><label>URL do Banner</label><input id="sBanner" placeholder="https://..."/></div>
+        <div class="fg"><label>Badge Personalizado</label><input id="sBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
+        <button class="btn-submit" onclick="saveAccount()"><i class="fas fa-save"></i> Salvar</button>
+        <p id="accountMsg" class="save-msg"></p>
+      </div>
+    </div>
+
+    <!-- APPEARANCE -->
+    <div class="stab" id="tab-appearance">
+      <h2 class="stab-title"><i class="fas fa-paint-brush"></i> Aparência do Perfil</h2>
+      <div class="settings-card">
+        <div class="fg"><label>Cor do Avatar</label>
+          <div class="color-row">
+            <input type="color" id="sAvatarColor" value="#7c6af7" class="color-pick"/>
+            <div class="color-presets">
+              <span class="cp" style="background:#7c6af7" onclick="document.getElementById('sAvatarColor').value='#7c6af7'"></span>
+              <span class="cp" style="background:#ff6b35" onclick="document.getElementById('sAvatarColor').value='#ff6b35'"></span>
+              <span class="cp" style="background:#00d4aa" onclick="document.getElementById('sAvatarColor').value='#00d4aa'"></span>
+              <span class="cp" style="background:#ff4757" onclick="document.getElementById('sAvatarColor').value='#ff4757'"></span>
+              <span class="cp" style="background:#ffd700" onclick="document.getElementById('sAvatarColor').value='#ffd700'"></span>
+              <span class="cp" style="background:#1e90ff" onclick="document.getElementById('sAvatarColor').value='#1e90ff'"></span>
+            </div>
+          </div>
+        </div>
+        <div class="fg"><label>Cor do Nome</label>
+          <div class="color-row">
+            <input type="color" id="sNameColor" value="#ffffff" class="color-pick"/>
+            <div class="color-presets">
+              <span class="cp" style="background:#ffffff" onclick="document.getElementById('sNameColor').value='#ffffff'"></span>
+              <span class="cp" style="background:#7c6af7" onclick="document.getElementById('sNameColor').value='#7c6af7'"></span>
+              <span class="cp" style="background:#ff6b35" onclick="document.getElementById('sNameColor').value='#ff6b35'"></span>
+              <span class="cp" style="background:#00d4aa" onclick="document.getElementById('sNameColor').value='#00d4aa'"></span>
+              <span class="cp" style="background:#ffd700" onclick="document.getElementById('sNameColor').value='#ffd700'"></span>
+            </div>
+          </div>
+        </div>
+        <div class="fg preview-area">
+          <label>Preview</label>
+          <div class="profile-preview" id="profilePreview">
+            <div class="prev-av" id="prevAv">A</div>
+            <div class="prev-name" id="prevName">Usuário</div>
+          </div>
+        </div>
+        <button class="btn-submit" onclick="saveAppearance()"><i class="fas fa-save"></i> Salvar Aparência</button>
+        <p id="appearMsg" class="save-msg"></p>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="stab" id="tab-security">
+      <h2 class="stab-title"><i class="fas fa-shield-alt"></i> Segurança</h2>
+      <div class="settings-card">
+        <div class="fg"><label>Senha Atual</label><input type="password" id="sOldPass" placeholder="Senha atual"/></div>
+        <div class="fg"><label>Nova Senha</label><input type="password" id="sNewPass" placeholder="Nova senha"/></div>
+        <div class="fg"><label>Confirmar Nova Senha</label><input type="password" id="sConfPass" placeholder="Repita a nova senha"/></div>
+        <button class="btn-submit" onclick="changePassword()"><i class="fas fa-key"></i> Alterar Senha</button>
+        <p id="secMsg" class="save-msg"></p>
+      </div>
+    </div>
+
+    <!-- DANGER -->
+    <div class="stab" id="tab-danger">
+      <h2 class="stab-title" style="color:#ff6b6b"><i class="fas fa-trash"></i> Zona de Perigo</h2>
+      <div class="settings-card danger-card">
+        <p>Ao deletar sua conta, todos os seus scripts e dados serão removidos permanentemente.</p>
+        <button class="btn-danger" onclick="deleteAccount()"><i class="fas fa-trash-alt"></i> Deletar Minha Conta</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">⚡ Script<span class="acc">Drop</span></div>
+    <p>© 2025 ScriptDrop</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+function showTab(name, btn){
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.snav').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function loadSettings(){
+  const session = localStorage.getItem('session');
+  if(!session){ location.href='login.html'; return; }
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const user = users.find(u=>u.username===session)||{};
+  document.getElementById('sBio').value = user.bio||'';
+  document.getElementById('sBanner').value = user.banner||'';
+  document.getElementById('sBadge').value = user.badge||'';
+  document.getElementById('sAvatarColor').value = user.avatarColor||'#7c6af7';
+  document.getElementById('sNameColor').value = user.nameColor||'#ffffff';
+  updatePreview();
+  document.getElementById('sAvatarColor').addEventListener('input', updatePreview);
+  document.getElementById('sNameColor').addEventListener('input', updatePreview);
+  function updatePreview(){
+    document.getElementById('prevAv').style.background = document.getElementById('sAvatarColor').value;
+    document.getElementById('prevAv').textContent = session.charAt(0).toUpperCase();
+    document.getElementById('prevName').style.color = document.getElementById('sNameColor').value;
+    document.getElementById('prevName').textContent = session;
+  }
+}
+
+function saveAccount(){
+  const session = localStorage.getItem('session');
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const idx = users.findIndex(u=>u.username===session);
+  users[idx].bio = document.getElementById('sBio').value.trim();
+  users[idx].banner = document.getElementById('sBanner').value.trim();
+  users[idx].badge = document.getElementById('sBadge').value.trim();
+  localStorage.setItem('users',JSON.stringify(users));
+  showMsg('accountMsg','✅ Salvo com sucesso!','#00d4aa');
+}
+
+function saveAppearance(){
+  const session = localStorage.getItem('session');
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const idx = users.findIndex(u=>u.username===session);
+  users[idx].avatarColor = document.getElementById('sAvatarColor').value;
+  users[idx].nameColor = document.getElementById('sNameColor').value;
+  localStorage.setItem('users',JSON.stringify(users));
+  showMsg('appearMsg','✅ Aparência salva!','#00d4aa');
+}
+
+function changePassword(){
+  const session = localStorage.getItem('session');
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const idx = users.findIndex(u=>u.username===session);
+  const old = document.getElementById('sOldPass').value;
+  const nw = document.getElementById('sNewPass').value;
+  const cf = document.getElementById('sConfPass').value;
+  if(users[idx].password !== old) return showMsg('secMsg','❌ Senha atual incorreta.','#ff6b6b');
+  if(nw !== cf) return showMsg('secMsg','❌ Senhas não coincidem.','#ff6b6b');
+  if(nw.length < 4) return showMsg('secMsg','❌ Senha muito curta.','#ff6b6b');
+  users[idx].password = nw;
+  localStorage.setItem('users',JSON.stringify(users));
+  showMsg('secMsg','✅ Senha alterada!','#00d4aa');
+}
+
+function deleteAccount(){
+  if(!confirm('Tem certeza? Isso é irreversível!')) return;
+  const session = localStorage.getItem('session');
+  let users = JSON.parse(localStorage.getItem('users')||'[]');
+  users = users.filter(u=>u.username!==session);
+  localStorage.setItem('users',JSON.stringify(users));
+  let posts = JSON.parse(localStorage.getItem('posts')||'[]');
+  posts = posts.filter(p=>p.author!==session);
+  localStorage.setItem('posts',JSON.stringify(posts));
+  localStorage.removeItem('session');
+  location.href='index.html';
+}
+
+function showMsg(id, msg, color){
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.color = color;
+  setTimeout(()=>el.textContent='', 3000);
+}
+
+loadSettings();
+</script>
+</body>
+</html>

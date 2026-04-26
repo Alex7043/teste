@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background -->
+  <rect width="64" height="64" rx="12" fill="#1a1a2e"/>
+  <rect width="64" height="64" rx="12" fill="url(#bg-grad)"/>
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#16213e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- BODY (blocky Roblox style) -->
+  <!-- Torso -->
+  <rect x="22" y="30" width="20" height="16" rx="2" fill="#2d6a4f"/>
+  <!-- Colete/armadura -->
+  <rect x="22" y="30" width="20" height="8" rx="2" fill="#1b4332"/>
+  <!-- Linha do colete -->
+  <rect x="29" y="30" width="6" height="16" fill="#1b4332" opacity="0.5"/>
+
+  <!-- Cabeça -->
+  <rect x="21" y="14" width="22" height="18" rx="3" fill="#f4a261"/>
+  <!-- Capacete militar -->
+  <rect x="19" y="12" width="26" height="10" rx="4" fill="#2d6a4f"/>
+  <rect x="19" y="12" width="26" height="5" rx="3" fill="#1b4332"/>
+  <!-- Aba do capacete -->
+  <rect x="17" y="19" width="30" height="4" rx="2" fill="#1b4332"/>
+
+  <!-- Olhos -->
+  <rect x="25" y="22" width="5" height="4" rx="1" fill="#fff"/>
+  <rect x="34" y="22" width="5" height="4" rx="1" fill="#fff"/>
+  <rect x="27" y="23" width="3" height="3" rx="1" fill="#1a1a2e"/>
+  <rect x="36" y="23" width="3" height="3" rx="1" fill="#1a1a2e"/>
+  <!-- Brilho olhos -->
+  <rect x="28" y="23" width="1" height="1" fill="#fff"/>
+  <rect x="37" y="23" width="1" height="1" fill="#fff"/>
+
+  <!-- Braço esquerdo -->
+  <rect x="12" y="30" width="10" height="14" rx="2" fill="#2d6a4f"/>
+  <!-- Braço direito (segurando arma) -->
+  <rect x="42" y="30" width="10" height="14" rx="2" fill="#2d6a4f"/>
+
+  <!-- Pernas -->
+  <rect x="22" y="46" width="9" height="12" rx="2" fill="#1b4332"/>
+  <rect x="33" y="46" width="9" height="12" rx="2" fill="#1b4332"/>
+  <!-- Botas -->
+  <rect x="21" y="54" width="11" height="5" rx="2" fill="#333"/>
+  <rect x="32" y="54" width="11" height="5" rx="2" fill="#333"/>
+
+  <!-- ARMA (rifle) -->
+  <rect x="44" y="34" width="16" height="4" rx="1" fill="#555" transform="rotate(-15 44 34)"/>
+  <rect x="54" y="30" width="6" height="3" rx="1" fill="#444" transform="rotate(-15 54 30)"/>
+  <!-- Cano -->
+  <rect x="56" y="28" width="2" height="8" rx="1" fill="#666" transform="rotate(-15 56 28)"/>
+
+  <!-- Estrela/badge no peito -->
+  <polygon points="32,33 33.2,36.6 37,36.6 34,38.8 35.2,42.4 32,40.2 28.8,42.4 30,38.8 27,36.6 30.8,36.6" fill="#ffd700" opacity="0.9" transform="scale(0.5) translate(32,30)"/>
+</svg>

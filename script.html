@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Script — ScriptDrop</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="stylesheet" href="style.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nl"><i class="fas fa-home"></i> Home</a>
+      <a href="index.html#scripts" class="nl"><i class="fas fa-code"></i> Scripts</a>
+    </div>
+    <div class="nav-right">
+      <div id="nav-guest" class="nav-auth">
+        <a href="login.html" class="btn-ghost-sm">Entrar</a>
+        <a href="register.html" class="btn-primary-sm">Registrar</a>
+      </div>
+      <div id="nav-logged" class="nav-user-area" style="display:none">
+        <button class="btn-post-nav" onclick="window.location='index.html'"><i class="fas fa-plus"></i> Postar</button>
+        <div class="nav-avatar-wrap" id="navAvatarWrap">
+          <div class="nav-avatar" id="navAvatar"></div>
+          <span id="navName"></span>
+          <i class="fas fa-chevron-down nav-chev"></i>
+          <div class="nav-dropdown" id="navDropdown">
+            <a href="profile.html"><i class="fas fa-user"></i> Meu Perfil</a>
+            <a href="settings.html"><i class="fas fa-cog"></i> Configurações</a>
+            <div class="dd-divider"></div>
+            <a onclick="logout()" style="color:#ff6b6b;cursor:pointer"><i class="fas fa-sign-out-alt"></i> Sair</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="script-page-wrap" id="scriptPageWrap">
+  <div class="sp-loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">⚡ Script<span class="acc">Drop</span></div>
+    <p>© 2025 ScriptDrop</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+(function(){
+  const params = new URLSearchParams(location.search);
+  const id = parseInt(params.get('id'));
+  const posts = JSON.parse(localStorage.getItem('posts')||'[]');
+  const post = posts.find(p=>p.id===id);
+  const wrap = document.getElementById('scriptPageWrap');
+
+  if(!post){ wrap.innerHTML='<div class="sp-err"><i class="fas fa-exclamation-triangle"></i><h2>Script não encontrado</h2><a href="index.html" class="btn-hero-primary">Voltar</a></div>'; return; }
+
+  // increment views
+  post.views = (post.views||0)+1;
+  const idx = posts.findIndex(p=>p.id===id);
+  posts[idx]=post;
+  localStorage.setItem('posts',JSON.stringify(posts));
+
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const author = users.find(u=>u.username===post.author)||{};
+  const avatarColor = author.avatarColor||'#7c6af7';
+  const avatarText = post.author.charAt(0).toUpperCase();
+  const banner = author.banner||'';
+  const bio = author.bio||'Sem bio.';
+  const tagsHtml = (post.tags||[]).map(t=>`<span class="tag-chip">${escapeHtml(t)}</span>`).join('');
+  const imgHtml = post.image ? `<div class="sp-cover"><img src="${escapeHtml(post.image)}" alt="cover" onerror="this.parentElement.style.display='none'"/></div>` : '';
+
+  wrap.innerHTML = `
+  <div class="sp-hero" ${banner?`style="background-image:url('${escapeHtml(banner)}');background-size:cover;background-position:center"`:''}></div>
+  <div class="sp-content">
+    <div class="sp-main">
+      ${imgHtml}
+      <div class="sp-header">
+        <div class="sp-title-area">
+          <h1 class="sp-title">${escapeHtml(post.title)}</h1>
+          <div class="sp-meta">
+            <span><i class="fas fa-gamepad"></i> ${escapeHtml(post.game||'Universal')}</span>
+            <span><i class="fas fa-eye"></i> ${post.views} views</span>
+            <span><i class="fas fa-calendar"></i> ${post.date}</span>
+          </div>
+          <div class="sp-tags">${tagsHtml}</div>
+        </div>
+        <div class="sp-actions">
+          <button class="btn-copy-big" id="copyBtn" onclick="copyScriptPage(${post.id})"><i class="fas fa-copy"></i> Copiar Script</button>
+          <a href="raw.html?id=${post.id}" class="btn-raw" target="_blank"><i class="fas fa-file-code"></i> Raw</a>
+        </div>
+      </div>
+      ${post.desc?`<div class="sp-desc"><h3><i class="fas fa-info-circle"></i> Descrição</h3><p>${escapeHtml(post.desc)}</p></div>`:''}
+      <div class="sp-code-block">
+        <div class="sp-code-bar">
+          <span><i class="fas fa-code"></i> Script</span>
+          <button onclick="copyScriptPage(${post.id})" id="copyBtn2"><i class="fas fa-copy"></i> Copiar</button>
+        </div>
+        <pre class="sp-code">${escapeHtml(post.code)}</pre>
+      </div>
+    </div>
+    <aside class="sp-sidebar">
+      <div class="sp-author-card">
+        <div class="sp-author-banner" ${author.banner?`style="background-image:url('${escapeHtml(author.banner)}');background-size:cover"`:''}></div>
+        <div class="sp-author-body">
+          <div class="sp-author-av" style="background:${avatarColor}">${avatarText}</div>
+          <div class="sp-author-name">${escapeHtml(post.author)}</div>
+          <div class="sp-author-bio">${escapeHtml(bio)}</div>
+          <a href="profile.html?user=${encodeURIComponent(post.author)}" class="btn-view-profile">Ver Perfil</a>
+        </div>
+      </div>
+      <div class="sp-more-card">
+        <div class="sc-title"><i class="fas fa-layer-group"></i> Mais Scripts</div>
+        <div id="moreScripts"></div>
+      </div>
+    </aside>
+  </div>`;
+
+  // more scripts
+  const more = posts.filter(p=>p.id!==id).slice(0,5);
+  document.getElementById('moreScripts').innerHTML = more.length ? more.map(p=>`
+    <a href="script.html?id=${p.id}" class="more-item">
+      <div class="more-title">${escapeHtml(p.title)}</div>
+      <div class="more-meta">${escapeHtml(p.author)} · ${escapeHtml(p.game||'Universal')}</div>
+    </a>`).join('') : '<p style="color:#555;font-size:.85rem">Nenhum outro script.</p>';
+})();
+
+function copyScriptPage(id){
+  const posts = JSON.parse(localStorage.getItem('posts')||'[]');
+  const post = posts.find(p=>p.id===id);
+  if(!post) return;
+  navigator.clipboard.writeText(post.code).then(()=>{
+    ['copyBtn','copyBtn2'].forEach(bid=>{
+      const b=document.getElementById(bid);
+      if(b){b.innerHTML='<i class="fas fa-check"></i> Copiado!';b.classList.add('copied');setTimeout(()=>{b.innerHTML='<i class="fas fa-copy"></i> Copiar Script';b.classList.remove('copied');},2000);}
+    });
+  });
+}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>

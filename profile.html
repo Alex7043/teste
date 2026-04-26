@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Perfil — ScriptDrop</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="stylesheet" href="style.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nl"><i class="fas fa-home"></i> Home</a>
+      <a href="index.html#scripts" class="nl"><i class="fas fa-code"></i> Scripts</a>
+    </div>
+    <div class="nav-right">
+      <div id="nav-guest" class="nav-auth">
+        <a href="login.html" class="btn-ghost-sm">Entrar</a>
+        <a href="register.html" class="btn-primary-sm">Registrar</a>
+      </div>
+      <div id="nav-logged" class="nav-user-area" style="display:none">
+        <button class="btn-post-nav" onclick="window.location='index.html'"><i class="fas fa-plus"></i> Postar</button>
+        <div class="nav-avatar-wrap" id="navAvatarWrap">
+          <div class="nav-avatar" id="navAvatar"></div>
+          <span id="navName"></span>
+          <i class="fas fa-chevron-down nav-chev"></i>
+          <div class="nav-dropdown" id="navDropdown">
+            <a href="profile.html"><i class="fas fa-user"></i> Meu Perfil</a>
+            <a href="settings.html"><i class="fas fa-cog"></i> Configurações</a>
+            <div class="dd-divider"></div>
+            <a onclick="logout()" style="color:#ff6b6b;cursor:pointer"><i class="fas fa-sign-out-alt"></i> Sair</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div id="profileWrap"></div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editModal">
+  <div class="modal-box animate-scale" style="max-width:520px">
+    <div class="modal-head">
+      <h3><i class="fas fa-paint-brush"></i> Editar Perfil</h3>
+      <button class="modal-x" onclick="closeEditModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label>Bio</label><input id="editBio" placeholder="Fale sobre você..."/></div>
+      <div class="fg"><label>URL do Banner <span class="opt">(imagem de fundo)</span></label><input id="editBanner" placeholder="https://..."/></div>
+      <div class="fg"><label>Cor do Avatar</label>
+        <div class="color-row">
+          <input type="color" id="editColor" value="#7c6af7" class="color-pick"/>
+          <div class="color-presets">
+            <span class="cp" style="background:#7c6af7" onclick="setColor('#7c6af7')"></span>
+            <span class="cp" style="background:#ff6b35" onclick="setColor('#ff6b35')"></span>
+            <span class="cp" style="background:#00d4aa" onclick="setColor('#00d4aa')"></span>
+            <span class="cp" style="background:#ff4757" onclick="setColor('#ff4757')"></span>
+            <span class="cp" style="background:#ffd700" onclick="setColor('#ffd700')"></span>
+            <span class="cp" style="background:#1e90ff" onclick="setColor('#1e90ff')"></span>
+          </div>
+        </div>
+      </div>
+      <div class="fg"><label>Cor do Nome</label>
+        <div class="color-row">
+          <input type="color" id="editNameColor" value="#ffffff" class="color-pick"/>
+          <div class="color-presets">
+            <span class="cp" style="background:#ffffff" onclick="setNameColor('#ffffff')"></span>
+            <span class="cp" style="background:#7c6af7" onclick="setNameColor('#7c6af7')"></span>
+            <span class="cp" style="background:#ff6b35" onclick="setNameColor('#ff6b35')"></span>
+            <span class="cp" style="background:#00d4aa" onclick="setNameColor('#00d4aa')"></span>
+            <span class="cp" style="background:#ffd700" onclick="setNameColor('#ffd700')"></span>
+          </div>
+        </div>
+      </div>
+      <div class="fg"><label>Badge Personalizado <span class="opt">(emoji ou texto curto)</span></label><input id="editBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
+      <button class="btn-submit" onclick="saveProfile()"><i class="fas fa-save"></i> Salvar Perfil</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">⚡ Script<span class="acc">Drop</span></div>
+    <p>© 2025 ScriptDrop</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+function setColor(c){ document.getElementById('editColor').value=c; }
+function setNameColor(c){ document.getElementById('editNameColor').value=c; }
+
+function openEditModal(){
+  const session = localStorage.getItem('session');
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const user = users.find(u=>u.username===session)||{};
+  document.getElementById('editBio').value = user.bio||'';
+  document.getElementById('editBanner').value = user.banner||'';
+  document.getElementById('editColor').value = user.avatarColor||'#7c6af7';
+  document.getElementById('editNameColor').value = user.nameColor||'#ffffff';
+  document.getElementById('editBadge').value = user.badge||'';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEditModal(){ document.getElementById('editModal').classList.remove('open'); }
+
+function saveProfile(){
+  const session = localStorage.getItem('session');
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const idx = users.findIndex(u=>u.username===session);
+  if(idx===-1) return;
+  users[idx].bio = document.getElementById('editBio').value.trim();
+  users[idx].banner = document.getElementById('editBanner').value.trim();
+  users[idx].avatarColor = document.getElementById('editColor').value;
+  users[idx].nameColor = document.getElementById('editNameColor').value;
+  users[idx].badge = document.getElementById('editBadge').value.trim();
+  localStorage.setItem('users',JSON.stringify(users));
+  closeEditModal();
+  renderProfile();
+}
+
+function renderProfile(){
+  const params = new URLSearchParams(location.search);
+  const targetUser = params.get('user') || localStorage.getItem('session');
+  const session = localStorage.getItem('session');
+  const isOwn = targetUser === session;
+  const users = JSON.parse(localStorage.getItem('users')||'[]');
+  const user = users.find(u=>u.username===targetUser);
+  const wrap = document.getElementById('profileWrap');
+
+  if(!user){ wrap.innerHTML='<div class="sp-err"><i class="fas fa-user-slash"></i><h2>Usuário não encontrado</h2><a href="index.html" class="btn-hero-primary">Voltar</a></div>'; return; }
+
+  const posts = JSON.parse(localStorage.getItem('posts')||'[]');
+  const userPosts = posts.filter(p=>p.author===targetUser);
+  const avatarColor = user.avatarColor||'#7c6af7';
+  const nameColor = user.nameColor||'#ffffff';
+  const banner = user.banner||'';
+  const bio = user.bio||'Sem bio ainda.';
+  const badge = user.badge||'';
+  const totalViews = userPosts.reduce((a,p)=>a+(p.views||0),0);
+
+  wrap.innerHTML = `
+  <div class="profile-banner" ${banner?`style="background-image:url('${escapeHtml(banner)}');background-size:cover;background-position:center"`:''}></div>
+  <div class="profile-wrap">
+    <div class="profile-header">
+      <div class="profile-av-wrap">
+        <div class="profile-av" style="background:${avatarColor}">${targetUser.charAt(0).toUpperCase()}</div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <h1 class="profile-name" style="color:${nameColor}">${escapeHtml(targetUser)}</h1>
+          ${badge?`<span class="profile-badge">${escapeHtml(badge)}</span>`:''}
+        </div>
+        <p class="profile-bio">${escapeHtml(bio)}</p>
+        <div class="profile-stats-row">
+          <div class="pstat"><span>${userPosts.length}</span><small>Scripts</small></div>
+          <div class="pstat"><span>${totalViews}</span><small>Views</small></div>
+        </div>
+      </div>
+      ${isOwn?`<button class="btn-edit-profile" onclick="openEditModal()"><i class="fas fa-paint-brush"></i> Editar Perfil</button>`:''}
+    </div>
+    <div class="profile-scripts">
+      <h2 class="feed-title"><i class="fas fa-code"></i> Scripts de ${escapeHtml(targetUser)}</h2>
+      <div class="script-grid" id="profileGrid"></div>
+    </div>
+  </div>`;
+
+  const grid = document.getElementById('profileGrid');
+  if(!userPosts.length){ grid.innerHTML='<p style="color:#555">Nenhum script publicado ainda.</p>'; return; }
+  grid.innerHTML = userPosts.map(p=>buildCard(p)).join('');
+}
+
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function buildCard(p){
+  const tags=(p.tags||[]).slice(0,3).map(t=>`<span class="tag-chip">${escapeHtml(t)}</span>`).join('');
+  const img=p.image?`<div class="card-img"><img src="${escapeHtml(p.image)}" onerror="this.parentElement.style.display='none'"/></div>`:'';
+  return `<div class="script-card" onclick="location.href='script.html?id=${p.id}'">
+    ${img}
+    <div class="card-body">
+      <div class="card-game"><i class="fas fa-gamepad"></i> ${escapeHtml(p.game||'Universal')}</div>
+      <div class="card-title">${escapeHtml(p.title)}</div>
+      <div class="card-tags">${tags}</div>
+      <div class="card-footer">
+        <span class="card-author"><i class="fas fa-user"></i> ${escapeHtml(p.author)}</span>
+        <span class="card-views"><i class="fas fa-eye"></i> ${p.views||0}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+renderProfile();
+</script>
+</body>
+</html>

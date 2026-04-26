@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>Raw — ScriptDrop</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0d0d0d;color:#a8ff78;font-family:'JetBrains Mono',monospace;font-size:14px;padding:20px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+</head>
+<body id="rawBody">Carregando...
+<script>
+const id = parseInt(new URLSearchParams(location.search).get('id'));
+const posts = JSON.parse(localStorage.getItem('posts')||'[]');
+const post = posts.find(p=>p.id===id);
+document.getElementById('rawBody').textContent = post ? post.code : '-- Script não encontrado';
+</script>
+</body>
+</html>
