@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScriptShare</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <span class="logo">🖥️ ScriptShare</span>
+    <div id="nav-auth">
+      <a href="login.html">Login</a>
+      <a href="register.html">Registrar</a>
+    </div>
+    <div id="nav-user" style="display:none">
+      <span id="nav-username"></span>
+      <button onclick="logout()">Sair</button>
+    </div>
+  </nav>
+
+  <main>
+    <div id="post-form" style="display:none">
+      <h2>Novo Post</h2>
+      <input type="text" id="post-title" placeholder="Título do script" />
+      <textarea id="post-code" placeholder="Cole seu script aqui..."></textarea>
+      <button onclick="submitPost()">Publicar</button>
+    </div>
+
+    <h2>Posts</h2>
+    <div id="feed"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - ScriptShare</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <a class="logo" href="index.html">🖥️ ScriptShare</a>
+    <div>
+      <a href="login.html">Login</a>
+      <a href="register.html">Registrar</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="form-box">
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Usuário" />
+      <input type="password" id="password" placeholder="Senha" />
+      <p id="error" class="error"></p>
+      <button onclick="login()">Entrar</button>
+      <p>Não tem conta? <a href="register.html">Registrar</a></p>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
