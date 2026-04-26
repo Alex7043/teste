@@ -174,6 +174,7 @@
         <a href="register" class="btn-primary-sm">Registrar</a>
       </div>
       <div id="nav-logged" class="nav-user-area" style="display:none">
+        <button class="btn-admin-nav" id="navAdminBtn" onclick="location.href='settings'"><i class="fas fa-crown"></i> Admin</button>
         <button class="btn-post-nav" onclick="window.location='./'"><i class="fas fa-plus"></i> Postar</button>
         <div class="nav-avatar-wrap" id="navAvatarWrap">
           <div class="nav-avatar" id="navAvatar"></div>
@@ -202,23 +203,8 @@
     </div>
     <div class="modal-body">
       <div class="fg"><label>Bio</label><input id="editBio" placeholder="Fale sobre você..."/></div>
-      <div class="fg">
-        <label><i class="fas fa-music"></i> Música do Perfil</label>
-        <div class="file-input-wrap">
-          <input id="editMusic" placeholder="URL .mp3 ou carregar arquivo..." style="flex-grow:1"/>
-          <input type="file" id="fileMusicEdit" class="hidden-file" accept="audio/*" onchange="handleFile(this, 'editMusic')"/>
-          <button class="btn-file" onclick="document.getElementById('fileMusicEdit').click()"><i class="fas fa-upload"></i></button>
-        </div>
-      </div>
       <div class="fg"><label>URL do Avatar</label><input id="editAvatarURL" placeholder="https://..."/></div>
-      <div class="fg">
-        <label><i class="fas fa-image"></i> Banner (Img/Vídeo)</label>
-        <div class="file-input-wrap">
-          <input id="editBanner" placeholder="URL ou carregar arquivo..." style="flex-grow:1"/>
-          <input type="file" id="fileBannerEdit" class="hidden-file" accept="image/*,video/*" onchange="handleFile(this, 'editBanner')"/>
-          <button class="btn-file" onclick="document.getElementById('fileBannerEdit').click()"><i class="fas fa-upload"></i></button>
-        </div>
-      </div>
+      <div class="fg"><label>URL do Banner <span class="opt">(imagem de fundo)</span></label><input id="editBanner" placeholder="https://..."/></div>
       <div class="fg"><label>Cor do Avatar</label>
         <div class="color-row">
           <input type="color" id="editColor" value="#7c6af7" class="color-pick"/>
@@ -268,7 +254,6 @@ function openEditModal(){
   document.getElementById('editBio').value = user.bio||'';
   document.getElementById('editAvatarURL').value = user.avatarURL||'';
   document.getElementById('editBanner').value = user.banner||'';
-  document.getElementById('editMusic').value = user.profileMusic||'';
   document.getElementById('editColor').value = user.avatarColor||'#7c6af7';
   document.getElementById('editNameColor').value = user.nameColor||'#ffffff';
   document.getElementById('editModal').classList.add('open');
@@ -285,7 +270,6 @@ function saveProfile(){
   users[idx].banner = document.getElementById('editBanner').value.trim();
   users[idx].avatarColor = document.getElementById('editColor').value;
   users[idx].nameColor = document.getElementById('editNameColor').value;
-  users[idx].profileMusic = document.getElementById('editMusic').value.trim();
   localStorage.setItem('users',JSON.stringify(users));
   closeEditModal();
   renderProfile();
@@ -293,17 +277,8 @@ function saveProfile(){
 
 function renderProfile(){
   const params = new URLSearchParams(location.search);
-  let targetUser = params.get('user');
+  const targetUser = params.get('user') || localStorage.getItem('session');
   const session = localStorage.getItem('session');
-
-  if (!targetUser) targetUser = session;
-
-  // URL Cleaner: Muda de profile?user=alex para apenas /alex
-  if (targetUser && window.history.replaceState && !window.location.search.includes('raw')) {
-    const newUrl = window.location.pathname.replace(/profile(\.html)?$/, '') + targetUser;
-    window.history.replaceState(null, '', newUrl);
-  }
-
   const isOwn = targetUser === session;
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const user = users.find(u=>u.username===targetUser);
@@ -320,39 +295,43 @@ function renderProfile(){
   const uid = user.id || 'N/A';
   const totalViews = userPosts.reduce((a,p)=>a+(p.views||0),0);
 
-  // Sistema de múltiplas badges Oficiais
-  let badgesHtml = '';
-  if (uid === "937937001112555531") badgesHtml += '<span class="profile-badge">⚡ Owner</span>';
-  if (user.discordUser) badgesHtml += '<div class="discord-badge" title="Badge ganha ao conectar sua conta com o Bot oficial!"><i class="fab fa-discord"></i></div>';
-  
-  // Badges criadas pelo Admin
-  if (user.badges && user.badges.length) {
+  // Define o banner (Imagem ou Vídeo) - CORREÇÃO DO ERRO
+  const isVideoBanner = banner.startsWith('data:video') || banner.endsWith('.mp4') || banner.endsWith('.webm');
+  const bannerHtml = isVideoBanner 
+    ? `<video src="${escapeHtml(banner)}" class="profile-bg-video" autoplay loop muted playsinline></video>`
+    : `<div class="profile-bg-overlay" ${banner?`style="background-image:url('${escapeHtml(banner)}')"`:''}></div>`;
+
+  const isAlex = session === 'Alex';
+
+  // Sistema de Badges Oficiais (Embaixo do nome)
+  let badgesHtml = '<div class="badges-row">';
+  if (uid === "937937001112555531") {
+    badgesHtml += `<div class="badge-item" title="Owner & Founder">⚡</div>`;
+  }
+  if (user.discordUser) {
+    badgesHtml += `<div class="badge-item" style="color:#5865F2" title="Usuário verificado pelo Discord"><i class="fab fa-discord"></i></div>`;
+  }
+  if (user.badges) {
     user.badges.forEach(b => {
-      const isMedia = b.icon.startsWith('data:image') || b.icon.startsWith('http');
-      const content = isMedia 
-        ? `<img src="${escapeHtml(b.icon)}" class="admin-badge-icon" alt="badge">` 
-        : b.icon;
-      badgesHtml += `<div class="badge-item" title="${escapeHtml(b.desc)}">${content}</div>`;
+      badgesHtml += `<div class="badge-item" title="${escapeHtml(b.desc)}">${b.icon}</div>`;
     });
   }
+  badgesHtml += '</div>';
 
   const avatarContent = user.avatarURL 
     ? `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;object-fit:cover">`
     : targetUser.charAt(0).toUpperCase();
 
   wrap.innerHTML = `
-    ${bannerHtml}
+  <div class="profile-banner" ${banner?`style="background-image:url('${escapeHtml(banner)}');background-size:cover;background-position:center"`:''}></div>
     <div class="profile-header">
       <div class="profile-av-wrap">
         <div class="profile-av" style="background:${avatarColor}">${avatarContent}</div>
       </div>
       <div class="profile-info">
         <div class="profile-name-row">
-          <h1 class="profile-name" style="color:${nameColor}">${escapeHtml(targetUser)}</h1>
-          <div class="uid-tag" title="User ID: ${uid}">
-            <i class="fas fa-id-card"></i>
-            <span>#${uid}</span>
-          </div>
+          <h1 class="profile-name" style="color:${nameColor}">${escapeHtml(targetUser)} ${user.isVerified ? '<span style="color:#1e90ff" title="Verificado">✅</span>' : ''}</h1>
+          <div class="uid-tag" title="User ID: ${uid}"><i class="fas fa-tag"></i> #${uid}</div>
         </div>
         ${badgesHtml}
         <p class="profile-bio">${escapeHtml(bio)}</p>
@@ -377,7 +356,16 @@ function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;
 function buildCard(p){
   const tags=(p.tags||[]).slice(0,3).map(t=>`<span class="tag-chip">${escapeHtml(t)}</span>`).join('');
   const img=p.image?`<div class="card-img"><img src="${escapeHtml(p.image)}" onerror="this.parentElement.style.display='none'"/></div>`:'';
-  return `<div class="script-card" onclick="location.href='script?id=${p.id}'">
+  
+  // Verifica se o dono do perfil é o dono do script para mostrar o botão de deletar
+  const session = localStorage.getItem('session');
+  const params = new URLSearchParams(location.search);
+  const isOwnProfile = (params.get('user') || session) === session;
+
+  return `
+  <div class="script-card">
+    ${isOwnProfile ? `<button class="btn-delete-script" onclick="deletePost(${p.id})"><i class="fas fa-trash"></i></button>` : ''}
+    <div onclick="location.href='script?id=${p.id}'" style="cursor:pointer">
     ${img}
     <div class="card-body">
       <div class="card-game"><i class="fas fa-gamepad"></i> ${escapeHtml(p.game||'Universal')}</div>
@@ -387,6 +375,7 @@ function buildCard(p){
         <span class="card-author"><i class="fas fa-user"></i> ${escapeHtml(p.author)}</span>
         <span class="card-views"><i class="fas fa-eye"></i> ${p.views||0}</span>
       </div>
+    </div>
     </div>
   </div>`;
 }
