@@ -65,47 +65,6 @@ function togglePass(id, btn) {
   btn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
 }
 
-function connectDiscord() {
-  const session = getSession();
-  if (!session) return window.location.href = 'login';
-  
-  const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175";
-  window.open(botLink, '_blank'); // Abre em nova aba para o script abaixo continuar rodando
-  
-  const discordName = prompt("Após adicionar o bot, digite seu usuário do Discord (ex: alex_oficial):");
-  if(discordName) {
-    const users = getUsers();
-    const idx = users.findIndex(u => u.username === session);
-    if (idx !== -1) {
-      users[idx].discordUser = discordName;
-      
-      // Webhook para o Canal 1498076463302447104
-      const WEBHOOK_URL = "https://discord.com/api/webhooks/1498078416275116243/s_8PX4V6wIA9a56O4-cVjlDFtr-Y_LI5aRqQITa--2v4yO743cQ5ffPqu1XbZvNeDkVK"; 
-      fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: `🔔 **Nova Conexão!** Usuário: <@${discordName}>`,
-          embeds: [{
-            title: "🛡️ Conexão de Conta & Badge Atribuída",
-            description: `O usuário **${session}** vinculou sua conta ao bot e recebeu a badge oficial!`,
-            color: Math.floor(Math.random() * 16777215), // Cor aleatória no embed
-            thumbnail: { url: "https://cdn-icons-png.flaticon.com/512/5968/5968756.png" }, // Ícone do Discord
-            fields: [
-              { name: "✨ Badge", value: "🔹 Membro Discord", inline: true },
-              { name: "👤 Identidade", value: discordName, inline: true }
-            ],
-            footer: { text: "ScriptDrop Log System" }
-          }]
-        })
-      });
-
-      saveUsers(users);
-      location.reload();
-    }
-  }
-}
-
 // ---- Modal ----
 function openPostModal() {
   const m = document.getElementById('postModal');
@@ -253,10 +212,6 @@ function initNavbar() {
       const users = getUsers();
       const user  = users.find(u => u.username === session);
       
-      // Esconde o botão do Discord se já estiver conectado
-      const btnDisc = document.getElementById('btnDiscordNav');
-      if (btnDisc && user?.discordUser) btnDisc.style.display = 'none';
-
       if (user?.avatarURL) { navAvatar.innerHTML = `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
       else { navAvatar.textContent = session.charAt(0).toUpperCase(); navAvatar.style.background = user?.avatarColor || '#7c6af7'; }
     }

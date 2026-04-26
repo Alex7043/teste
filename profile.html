@@ -174,7 +174,6 @@
         <a href="register" class="btn-primary-sm">Registrar</a>
       </div>
       <div id="nav-logged" class="nav-user-area" style="display:none">
-        <button class="btn-discord-nav" id="btnDiscordNav" onclick="connectDiscord()"><i class="fab fa-discord"></i> Conectar</button>
         <button class="btn-post-nav" onclick="window.location='./'"><i class="fas fa-plus"></i> Postar</button>
         <div class="nav-avatar-wrap" id="navAvatarWrap">
           <div class="nav-avatar" id="navAvatar"></div>
@@ -293,13 +292,12 @@ function renderProfile(){
   const banner = user.banner||'';
   const bio = user.bio||'Sem bio ainda.';
   const uid = user.id || 'N/A';
-  const discord = user.discordUser||'';
   const totalViews = userPosts.reduce((a,p)=>a+(p.views||0),0);
 
   // Sistema de múltiplas badges (Owner + Discord)
   let badgesHtml = '';
   if (uid === "937937001112555531") badgesHtml += '<span class="profile-badge">⚡ Owner</span>';
-  if (discord) badgesHtml += '<span class="discord-badge" title="Badge ganha ao conectar sua conta com o Bot oficial!"><i class="fab fa-discord"></i> Membro Discord</span>';
+  if (user.discordUser) badgesHtml += '<span class="discord-badge"><i class="fab fa-discord"></i> Conectado</span>';
 
   const avatarContent = user.avatarURL 
     ? `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;object-fit:cover">`
@@ -308,21 +306,16 @@ function renderProfile(){
   wrap.innerHTML = `
   <div class="profile-banner" ${banner?`style="background-image:url('${escapeHtml(banner)}');background-size:cover;background-position:center"`:''}></div>
     <div class="profile-header">
-      <div class="profile-av-wrap" title="UID: ${uid}">
+      <div class="profile-av-wrap">
         <div class="profile-av" style="background:${avatarColor}">${avatarContent}</div>
       </div>
       <div class="profile-info">
         <div class="profile-name-row">
           <h1 class="profile-name" style="color:${nameColor}">${escapeHtml(targetUser)}</h1>
+          <div class="uid-tag" title="User ID: ${uid}"><i class="fas fa-fingerprint"></i> #${uid}</div>
           ${badgesHtml}
         </div>
         <p class="profile-bio">${escapeHtml(bio)}</p>
-        ${discord?`
-          <div class="discord-info-card">
-            <img src="https://cdn.prod.website-files.com/6257adef93867e3d0394e364/636e0a6a49f9a7c18c5e64b6_icon_clyde_blurple_RGB.png" alt="discord">
-            <span>${escapeHtml(discord)}</span>
-          </div>
-        `:''}
         <div class="profile-stats-row">
           <div class="pstat"><span>${userPosts.length}</span><small>Scripts</small></div>
           <div class="pstat"><span>${totalViews}</span><small>Views</small></div>
