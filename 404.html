@@ -7,7 +7,8 @@
         // Captura o caminho que deu 404 (ex: /alex) e joga para o profile
         var pathSegments = window.location.pathname.split('/');
         var lastSegment = pathSegments[pathSegments.length - 1];
-        if (lastSegment) {
+        // Evita redirecionar se já for um arquivo conhecido ou vazio
+        if (lastSegment && !lastSegment.includes('.')) {
             window.location.replace(window.location.origin + window.location.pathname.replace(lastSegment, '') + 'profile?user=' + lastSegment);
         }
     </script>

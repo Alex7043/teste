@@ -297,8 +297,17 @@ function saveProfile(){
 
 function renderProfile(){
   const params = new URLSearchParams(location.search);
-  const targetUser = params.get('user') || localStorage.getItem('session');
+  let targetUser = params.get('user');
   const session = localStorage.getItem('session');
+
+  if (!targetUser) targetUser = session;
+
+  // URL Cleaner: Transforma profile?user=alex em apenas /alex na barra de endereços
+  if (targetUser && window.history.replaceState) {
+    const cleanPath = window.location.pathname.replace(/profile(\.html)?$/, '');
+    window.history.replaceState(null, '', cleanPath + targetUser);
+  }
+
   const isOwn = targetUser === session;
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const user = users.find(u=>u.username===targetUser);

@@ -41,26 +41,48 @@ function timeAgo(ts) {
   return Math.floor(diff / 86400) + 'd atrás';
 }
 
+// Helper para detectar se o ícone é uma imagem/URL
+function isImage(str) {
+  if (!str) return false;
+  const s = str.toLowerCase().trim();
+  return s.startsWith('http') || s.startsWith('data:image') || s.includes('discordapp.com') || s.includes('.webp') || s.includes('.png') || s.includes('.gif');
+}
+
 // ---- Badges Helper ----
 function renderBadgesHtml(user) {
   if (!user) return '';
-  let html = '<div class="badges-inline">';
+  let html = '<div class="badges-row">';
   const uid = user.id || '';
   
   if (uid === "937937001112555531") {
-    html += '<span class="b-icon owner" title="Owner & Founder">⚡</span>';
+    html += `
+      <div class="badge-item">
+        <span class="owner-glow">⚡</span>
+        <div class="badge-tooltip"><strong>Owner & Founder</strong><p>Dono e desenvolvedor supremo.</p></div>
+      </div>`;
   }
   if (user.isVerified) {
-    html += '<span class="b-icon verified" title="Usuário Verificado - Scripts Confiáveis">✅</span>';
+    html += `
+      <div class="badge-item" style="color:#1e90ff">
+        <i class="fas fa-check-circle"></i>
+        <div class="badge-tooltip"><strong>Verificado</strong><p>Usuário de confiança da comunidade.</p></div>
+      </div>`;
   }
   if (user.discordUser) {
-    html += '<span class="b-icon discord" title="Discord Vinculado"><i class="fab fa-discord"></i></span>';
+    html += `
+      <div class="badge-item" style="color:#5865F2">
+        <i class="fab fa-discord"></i>
+        <div class="badge-tooltip"><strong>Discord</strong><p>Membro do servidor oficial.</p></div>
+      </div>`;
   }
   if (user.badges) {
     user.badges.forEach(b => {
-      const isMedia = b.icon.startsWith('data:image') || b.icon.startsWith('http');
-      const content = isMedia ? `<img src="${escapeHtml(b.icon)}">` : b.icon;
-      html += `<span class="b-icon custom" title="${escapeHtml(b.desc)}">${content}</span>`;
+      const content = isImage(b.icon) ? `<img src="${escapeHtml(b.icon)}" class="admin-badge-icon">` : b.icon;
+      html += `
+        <div class="badge-item">
+          ${content}
+          <div class="badge-tooltip"><strong>${escapeHtml(b.name || 'Badge Oficial')}</strong><p>${escapeHtml(b.desc)}</p></div>
+        </div>`;
     });
   }
   html += '</div>';

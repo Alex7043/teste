@@ -458,6 +458,59 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 }
 .uid-tag i { font-size: 0.7rem; color: #555; }
 
+
+/* ---- Admin Dashboard Cards ---- */
+.admin-user-container {
+  margin-bottom: 30px;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 25px;
+  animation: fadeUp 0.5s ease;
+}
+
+.admin-user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #222;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.admin-card {
+  background: #111;
+  border: 1px solid #222;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-card h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #555;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.owner-glow {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  font-weight: 900;
+}
+
 /* ---- Custom Tooltip System ---- */
 .badge-item {
   position: relative;
