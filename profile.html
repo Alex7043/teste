@@ -26,7 +26,7 @@
     --primary: #7c6af7;
   }
   
-  body { background: #0a0a0a; }
+  body { background: #050505; }
 
   #profileWrap {
     animation: fadeUp 0.8s ease;
@@ -36,11 +36,13 @@
   }
 
   .profile-banner {
-    height: 280px !important;
-    background: linear-gradient(135deg, #1e1e1e, #0f0f0f);
+    height: 320px !important;
+    background: linear-gradient(135deg, #121212, #000);
     border-bottom: 1px solid var(--border);
     overflow: hidden;
     width: 100%;
+    background-size: cover !important;
+    background-position: center !important;
   }
 
   .profile-header {
@@ -51,10 +53,10 @@
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
     border-radius: 24px;
-    padding: 30px 40px;
-    gap: 30px;
-    margin: -80px 20px 0 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    padding: 40px;
+    gap: 35px;
+    margin: -100px 20px 0 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
     position: relative;
     z-index: 10;
   }
@@ -62,9 +64,9 @@
   .profile-av-wrap { flex-shrink: 0; }
 
   .profile-av {
-    width: 140px !important;
-    height: 140px !important;
-    border-radius: 32px !important;
+    width: 160px !important;
+    height: 160px !important;
+    border-radius: 40px !important;
     border: 6px solid #161616 !important;
     font-size: 3rem !important;
     background: var(--primary);
@@ -76,30 +78,33 @@
     justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
+    transition: transform 0.3s ease;
   }
+  .profile-av:hover { transform: scale(1.05) rotate(-2deg); }
+  .profile-av img { width: 100%; height: 100%; object-fit: cover; }
 
   .profile-info { flex-grow: 1; }
   
   .profile-name-row { 
     display: flex; 
     align-items: center; 
-    gap: 12px; 
-    margin-bottom: 8px;
+    gap: 15px; 
+    margin-bottom: 12px;
     flex-wrap: wrap;
   }
   
-  .profile-name { font-size: 2.2rem; font-weight: 900; margin: 0; line-height: 1; }
-  .profile-badge { background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .profile-name { font-size: 2.8rem; font-weight: 950; margin: 0; line-height: 1; letter-spacing: -1px; }
+  .profile-badge { background: linear-gradient(135deg, var(--primary), #a855f7); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(124, 106, 247, 0.3); }
   
-  .profile-bio { color: #aaa; font-size: 1rem; margin-bottom: 15px; max-width: 600px; }
+  .profile-bio { color: #888; font-size: 1.1rem; margin-bottom: 25px; max-width: 650px; line-height: 1.6; }
 
   .profile-stats-row { display: flex; gap: 30px; }
   .pstat { display: flex; flex-direction: column; align-items: flex-start; }
-  .pstat span { font-size: 1.2rem; font-weight: 800; color: #fff; line-height: 1.2; }
-  .pstat small { color: #555; text-transform: uppercase; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; }
+  .pstat span { font-size: 1.5rem; font-weight: 900; color: #fff; line-height: 1.2; }
+  .pstat small { color: #444; text-transform: uppercase; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; }
 
   .btn-edit-profile {
-    background: rgba(255,255,255,0.05);
+    background: rgba(124, 106, 247, 0.1);
     border: 1px solid var(--border);
     color: #fff;
     display: flex; align-items: center; gap: 8px;
@@ -124,25 +129,25 @@
 
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a class="nav-logo" href="index.html"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
+    <a class="nav-logo" href="./"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
     <div class="nav-links">
-      <a href="index.html" class="nl"><i class="fas fa-home"></i> Home</a>
-      <a href="index.html#scripts" class="nl"><i class="fas fa-code"></i> Scripts</a>
+      <a href="./" class="nl"><i class="fas fa-home"></i> Home</a>
+      <a href="./#scripts" class="nl"><i class="fas fa-code"></i> Scripts</a>
     </div>
     <div class="nav-right">
       <div id="nav-guest" class="nav-auth">
-        <a href="login.html" class="btn-ghost-sm">Entrar</a>
-        <a href="register.html" class="btn-primary-sm">Registrar</a>
+        <a href="login" class="btn-ghost-sm">Entrar</a>
+        <a href="register" class="btn-primary-sm">Registrar</a>
       </div>
       <div id="nav-logged" class="nav-user-area" style="display:none">
-        <button class="btn-post-nav" onclick="window.location='index.html'"><i class="fas fa-plus"></i> Postar</button>
+        <button class="btn-post-nav" onclick="window.location='./'"><i class="fas fa-plus"></i> Postar</button>
         <div class="nav-avatar-wrap" id="navAvatarWrap">
           <div class="nav-avatar" id="navAvatar"></div>
           <span id="navName"></span>
           <i class="fas fa-chevron-down nav-chev"></i>
           <div class="nav-dropdown" id="navDropdown">
-            <a href="profile.html"><i class="fas fa-user"></i> Meu Perfil</a>
-            <a href="settings.html"><i class="fas fa-cog"></i> Configurações</a>
+            <a href="profile"><i class="fas fa-user"></i> Meu Perfil</a>
+            <a href="settings"><i class="fas fa-cog"></i> Configurações</a>
             <div class="dd-divider"></div>
             <a onclick="logout()" style="color:#ff6b6b;cursor:pointer"><i class="fas fa-sign-out-alt"></i> Sair</a>
           </div>
@@ -250,7 +255,7 @@ function renderProfile(){
   const user = users.find(u=>u.username===targetUser);
   const wrap = document.getElementById('profileWrap');
 
-  if(!user){ wrap.innerHTML='<div class="sp-err"><i class="fas fa-user-slash"></i><h2>Usuário não encontrado</h2><a href="index.html" class="btn-hero-primary">Voltar</a></div>'; return; }
+  if(!user){ wrap.innerHTML='<div class="sp-err"><i class="fas fa-user-slash"></i><h2>Usuário não encontrado</h2><a href="./" class="btn-hero-primary">Voltar</a></div>'; return; }
 
   const posts = JSON.parse(localStorage.getItem('posts')||'[]');
   const userPosts = posts.filter(p=>p.author===targetUser);
@@ -298,7 +303,7 @@ function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;
 function buildCard(p){
   const tags=(p.tags||[]).slice(0,3).map(t=>`<span class="tag-chip">${escapeHtml(t)}</span>`).join('');
   const img=p.image?`<div class="card-img"><img src="${escapeHtml(p.image)}" onerror="this.parentElement.style.display='none'"/></div>`:'';
-  return `<div class="script-card" onclick="location.href='script.html?id=${p.id}'">
+  return `<div class="script-card" onclick="location.href='script?id=${p.id}'">
     ${img}
     <div class="card-body">
       <div class="card-game"><i class="fas fa-gamepad"></i> ${escapeHtml(p.game||'Universal')}</div>

@@ -9,19 +9,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
+<style>
+  .stab { display: none; flex-direction: column; gap: 25px; }
+  .stab.active { display: flex; animation: fadeUp 0.4s ease; }
+  .settings-card { 
+    background: #111; 
+    border: 1px solid #222; 
+    border-radius: 20px; 
+    padding: 40px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+  }
+  .stab-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; color: #fff; }
+  .save-msg { font-size: 0.9rem; font-weight: 600; margin-top: 10px; height: 20px; }
+  .danger-card { border-color: rgba(255, 107, 107, 0.2); background: rgba(255, 107, 107, 0.02); }
+</style>
 <body>
 <canvas id="particles"></canvas>
 
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a class="nav-logo" href="index.html"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
+    <a class="nav-logo" href="./"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
     <div class="nav-links">
-      <a href="index.html" class="nl"><i class="fas fa-home"></i> Home</a>
+      <a href="./" class="nl"><i class="fas fa-home"></i> Home</a>
     </div>
     <div class="nav-right">
       <div id="nav-guest" class="nav-auth">
-        <a href="login.html" class="btn-ghost-sm">Entrar</a>
-        <a href="register.html" class="btn-primary-sm">Registrar</a>
+        <a href="login" class="btn-ghost-sm">Entrar</a>
+        <a href="register" class="btn-primary-sm">Registrar</a>
       </div>
       <div id="nav-logged" class="nav-user-area" style="display:none">
         <div class="nav-avatar-wrap" id="navAvatarWrap">
@@ -29,8 +45,8 @@
           <span id="navName"></span>
           <i class="fas fa-chevron-down nav-chev"></i>
           <div class="nav-dropdown" id="navDropdown">
-            <a href="profile.html"><i class="fas fa-user"></i> Meu Perfil</a>
-            <a href="settings.html" class="active"><i class="fas fa-cog"></i> Configurações</a>
+            <a href="profile"><i class="fas fa-user"></i> Meu Perfil</a>
+            <a href="settings" class="active"><i class="fas fa-cog"></i> Configurações</a>
             <div class="dd-divider"></div>
             <a onclick="logout()" style="color:#ff6b6b;cursor:pointer"><i class="fas fa-sign-out-alt"></i> Sair</a>
           </div>
@@ -147,7 +163,7 @@ function showTab(name, btn){
 
 function loadSettings(){
   const session = localStorage.getItem('session');
-  if(!session){ location.href='login.html'; return; }
+  if(!session){ location.href='login'; return; }
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const user = users.find(u=>u.username===session)||{};
   document.getElementById('sBio').value = user.bio||'';
@@ -219,7 +235,7 @@ function deleteAccount(){
   posts = posts.filter(p=>p.author!==session);
   localStorage.setItem('posts',JSON.stringify(posts));
   localStorage.removeItem('session');
-  location.href='index.html';
+  location.href='./';
 }
 
 function showMsg(id, msg, color){

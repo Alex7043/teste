@@ -124,7 +124,7 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 .settings-nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   background: #161616;
   padding: 15px;
   border-radius: 15px;
@@ -287,8 +287,9 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 .modal-x:hover { color: #ff6b6b; }
 .modal-body { padding: 25px; display: flex; flex-direction: column; gap: 15px; }
 
-.fg { display: flex; flex-direction: column; gap: 8px; }
-.fg label { font-size: 0.85rem; color: #888; font-weight: 600; }
+.fg { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.fg label { font-size: 0.9rem; color: #aaa; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.fg label i { color: #7c6af7; font-size: 0.8rem; }
 .opt { font-size: 0.7rem; color: #444; margin-left: 5px; }
 .fg input, .fg textarea { background: #0a0a0a; border: 1px solid #222; padding: 12px; border-radius: 8px; color: #fff; outline: none; font-family: inherit; }
 .fg textarea { min-height: 150px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }

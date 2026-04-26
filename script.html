@@ -24,25 +24,25 @@
 
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a class="nav-logo" href="index.html"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
+    <a class="nav-logo" href="./"><div class="logo-glow">⚡</div><span>Script<span class="acc">Drop</span></span></a>
     <div class="nav-links">
-      <a href="index.html" class="nl"><i class="fas fa-home"></i> Home</a>
-      <a href="index.html#scripts" class="nl"><i class="fas fa-code"></i> Scripts</a>
+      <a href="./" class="nl"><i class="fas fa-home"></i> Home</a>
+      <a href="./#scripts" class="nl"><i class="fas fa-code"></i> Scripts</a>
     </div>
     <div class="nav-right">
       <div id="nav-guest" class="nav-auth">
-        <a href="login.html" class="btn-ghost-sm">Entrar</a>
-        <a href="register.html" class="btn-primary-sm">Registrar</a>
+        <a href="login" class="btn-ghost-sm">Entrar</a>
+        <a href="register" class="btn-primary-sm">Registrar</a>
       </div>
       <div id="nav-logged" class="nav-user-area" style="display:none">
-        <button class="btn-post-nav" onclick="window.location='index.html'"><i class="fas fa-plus"></i> Postar</button>
+        <button class="btn-post-nav" onclick="window.location='./'"><i class="fas fa-plus"></i> Postar</button>
         <div class="nav-avatar-wrap" id="navAvatarWrap">
           <div class="nav-avatar" id="navAvatar"></div>
           <span id="navName"></span>
           <i class="fas fa-chevron-down nav-chev"></i>
           <div class="nav-dropdown" id="navDropdown">
-            <a href="profile.html"><i class="fas fa-user"></i> Meu Perfil</a>
-            <a href="settings.html"><i class="fas fa-cog"></i> Configurações</a>
+            <a href="profile"><i class="fas fa-user"></i> Meu Perfil</a>
+            <a href="settings"><i class="fas fa-cog"></i> Configurações</a>
             <div class="dd-divider"></div>
             <a onclick="logout()" style="color:#ff6b6b;cursor:pointer"><i class="fas fa-sign-out-alt"></i> Sair</a>
           </div>
@@ -72,7 +72,7 @@
   const post = posts.find(p=>p.id===id);
   const wrap = document.getElementById('scriptPageWrap');
 
-  if(!post){ wrap.innerHTML='<div class="sp-err"><i class="fas fa-exclamation-triangle"></i><h2>Script não encontrado</h2><a href="index.html" class="btn-hero-primary">Voltar</a></div>'; return; }
+  if(!post){ wrap.innerHTML='<div class="sp-err"><i class="fas fa-exclamation-triangle"></i><h2>Script não encontrado</h2><a href="./" class="btn-hero-primary">Voltar</a></div>'; return; }
 
   // increment views
   post.views = (post.views||0)+1;
@@ -106,7 +106,7 @@
         </div>
         <div class="sp-actions">
           <button class="btn-copy-big" id="copyBtn" onclick="copyScriptPage(${post.id})"><i class="fas fa-copy"></i> Copiar Script</button>
-          <a href="raw.html?id=${post.id}" class="btn-raw" target="_blank"><i class="fas fa-file-code"></i> Raw</a>
+          <a href="raw?id=${post.id}" class="btn-raw" target="_blank"><i class="fas fa-file-code"></i> Raw</a>
         </div>
       </div>
       ${post.desc?`<div class="sp-desc"><h3><i class="fas fa-info-circle"></i> Descrição</h3><p>${escapeHtml(post.desc)}</p></div>`:''}
@@ -125,7 +125,7 @@
           <div class="sp-author-av" style="background:${avatarColor}">${avatarText}</div>
           <div class="sp-author-name">${escapeHtml(post.author)}</div>
           <div class="sp-author-bio">${escapeHtml(bio)}</div>
-          <a href="profile.html?user=${encodeURIComponent(post.author)}" class="btn-view-profile">Ver Perfil</a>
+          <a href="profile?user=${encodeURIComponent(post.author)}" class="btn-view-profile">Ver Perfil</a>
         </div>
       </div>
       <div class="sp-more-card">
@@ -138,7 +138,7 @@
   // more scripts
   const more = posts.filter(p=>p.id!==id).slice(0,5);
   document.getElementById('moreScripts').innerHTML = more.length ? more.map(p=>`
-    <a href="script.html?id=${p.id}" class="more-item">
+    <a href="script?id=${p.id}" class="more-item">
       <div class="more-title">${escapeHtml(p.title)}</div>
       <div class="more-meta">${escapeHtml(p.author)} · ${escapeHtml(p.game||'Universal')}</div>
     </a>`).join('') : '<p style="color:#555;font-size:.85rem">Nenhum outro script.</p>';

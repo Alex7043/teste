@@ -44,7 +44,7 @@ function register() {
   users.push({ username, password });
   saveUsers(users);
   setSession(username);
-  window.location.href = 'index.html';
+  window.location.href = './';
 }
 
 function login() {
@@ -57,12 +57,12 @@ function login() {
   if (!user) return (error.textContent = 'Usuário ou senha incorretos.');
 
   setSession(username);
-  window.location.href = 'index.html';
+  window.location.href = './';
 }
 
 function logout() {
   clearSession();
-  window.location.href = 'index.html';
+  window.location.href = './';
 }
 
 function togglePass(id, btn) {
@@ -154,7 +154,7 @@ function renderFeed() {
       ? `<div class="pc-img"><img src="${escapeHtml(p.image)}" alt="cover" onerror="this.parentElement.classList.add('pc-img-err')"/></div>`
       : `<div class="pc-img pc-img-placeholder"><i class="fas fa-code"></i></div>`;
     return `
-    <a class="post-card" href="script.html?id=${p.id}">
+    <a class="post-card" href="script?id=${p.id}">
       <div class="pc-top">
         <span class="pc-time"><i class="fas fa-clock"></i> ${timeAgo(p.ts) || p.date}</span>
         <span class="pc-author">@${escapeHtml(p.author || 'anon')}</span>
@@ -176,7 +176,7 @@ function renderRecent(posts) {
   if (!el) return;
   const recent = posts.slice(0, 5);
   el.innerHTML = recent.length
-    ? recent.map(p => `<a class="recent-item" href="script.html?id=${p.id}"><span class="ri-title">${escapeHtml(p.title)}</span><span class="ri-game">${escapeHtml(p.game||'Universal')}</span></a>`).join('')
+    ? recent.map(p => `<a class="recent-item" href="script?id=${p.id}"><span class="ri-title">${escapeHtml(p.title)}</span><span class="ri-game">${escapeHtml(p.game||'Universal')}</span></a>`).join('')
     : '<p style="color:#555;font-size:.8rem">Nenhum script ainda.</p>';
 }
 
