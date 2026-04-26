@@ -24,6 +24,21 @@
   .stab-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; color: #fff; }
   .save-msg { font-size: 0.9rem; font-weight: 600; margin-top: 10px; height: 20px; }
   .danger-card { border-color: rgba(255, 107, 107, 0.2); background: rgba(255, 107, 107, 0.02); }
+  
+  .file-input-wrap { display: flex; gap: 10px; align-items: center; }
+  .btn-file { 
+    background: #222; 
+    border: 1px solid #333; 
+    color: #fff; 
+    padding: 10px 15px; 
+    border-radius: 8px; 
+    font-size: 0.85rem; 
+    cursor: pointer;
+  }
+  .btn-file:hover { background: #333; }
+  .hidden-file { display: none; }
+  .discord-box { background: #5865F2; color: #fff; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .discord-info { display: flex; align-items: center; gap: 15px; }
 </style>
 <body>
 <canvas id="particles"></canvas>
@@ -71,10 +86,28 @@
     <div class="stab active" id="tab-account">
       <h2 class="stab-title"><i class="fas fa-user"></i> Informações da Conta</h2>
       <div class="settings-card">
-        <div class="fg"><label>Bio</label><input id="sBio" placeholder="Fale sobre você..."/></div>
-        <div class="fg"><label>URL do Avatar</label><input id="sAvatarURL" placeholder="https://..."/></div>
-        <div class="fg"><label>URL do Banner</label><input id="sBanner" placeholder="https://..."/></div>
+        <div class="fg"><label><i class="fas fa-quote-left"></i> Bio</label><input id="sBio" placeholder="Fale sobre você..."/></div>
+        
+        <div class="fg">
+          <label><i class="fas fa-image"></i> Avatar (PFP)</label>
+          <div class="file-input-wrap">
+            <input id="sAvatarURL" placeholder="URL da imagem..." style="flex-grow:1"/>
+            <input type="file" id="fileAvatar" class="hidden-file" accept="image/*" onchange="handleFile(this, 'sAvatarURL')"/>
+            <button class="btn-file" onclick="document.getElementById('fileAvatar').click()"><i class="fas fa-upload"></i> Arquivo</button>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label><i class="fas fa- panorama"></i> Banner</label>
+          <div class="file-input-wrap">
+            <input id="sBanner" placeholder="URL da imagem..." style="flex-grow:1"/>
+            <input type="file" id="fileBanner" class="hidden-file" accept="image/*" onchange="handleFile(this, 'sBanner')"/>
+            <button class="btn-file" onclick="document.getElementById('fileBanner').click()"><i class="fas fa-upload"></i> Arquivo</button>
+          </div>
+        </div>
+
         <div class="fg" id="badgeContainer" style="display:none"><label>Badge Personalizado</label><input id="sBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
+        
         <button class="btn-submit" onclick="saveAccount()"><i class="fas fa-save"></i> Salvar</button>
         <p id="accountMsg" class="save-msg"></p>
       </div>
@@ -125,6 +158,14 @@
     <div class="stab" id="tab-security">
       <h2 class="stab-title"><i class="fas fa-shield-alt"></i> Segurança</h2>
       <div class="settings-card">
+        <div class="fg">
+          <label>Conexões</label>
+          <div class="discord-box" id="discordBox">
+            <div class="discord-info"><i class="fab fa-discord fa-2x"></i> <span id="discordStatus">Discord não conectado</span></div>
+            <button class="btn-file" style="background:#fff;color:#5865F2;border:none" onclick="connectDiscord()">Conectar</button>
+          </div>
+        </div>
+        <div class="dd-divider" style="margin: 20px 0"></div>
         <div class="fg"><label>Senha Atual</label><input type="password" id="sOldPass" placeholder="Senha atual"/></div>
         <div class="fg"><label>Nova Senha</label><input type="password" id="sNewPass" placeholder="Nova senha"/></div>
         <div class="fg"><label>Confirmar Nova Senha</label><input type="password" id="sConfPass" placeholder="Repita a nova senha"/></div>
@@ -161,6 +202,14 @@ function showTab(name, btn){
   btn.classList.add('active');
 }
 
+function handleFile(input, targetId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => { document.getElementById(targetId).value = e.target.result; updatePreview(); };
+  reader.readAsDataURL(file);
+}
+
 function loadSettings(){
   const session = localStorage.getItem('session');
   if(!session){ location.href='login'; return; }
@@ -176,6 +225,12 @@ function loadSettings(){
   document.getElementById('sAvatarColor').addEventListener('input', updatePreview);
   document.getElementById('sNameColor').addEventListener('input', updatePreview);
   if(session === 'Alex') document.getElementById('badgeContainer').style.display = 'flex';
+
+  // Carrega status do discord
+  if (user.discordUser) {
+    document.getElementById('discordStatus').textContent = `Conectado como ${user.discordUser}`;
+    document.getElementById('discordBox').style.opacity = '0.8';
+  }
 
   function updatePreview(){
     const av = document.getElementById('prevAv');
@@ -208,6 +263,21 @@ function saveAppearance(){
   users[idx].nameColor = document.getElementById('sNameColor').value;
   localStorage.setItem('users',JSON.stringify(users));
   showMsg('appearMsg','✅ Aparência salva!','#00d4aa');
+}
+
+function connectDiscord() {
+  const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175&permissions=8&integration_type=1&scope=bot";
+  window.open(botLink, '_blank');
+  
+  const discordName = prompt("Após adicionar o bot, digite seu usuário do Discord (ex: alex_oficial):");
+  if(discordName) {
+    const session = localStorage.getItem('session');
+    const users = JSON.parse(localStorage.getItem('users')||'[]');
+    const idx = users.findIndex(u=>u.username===session);
+    users[idx].discordUser = discordName;
+    localStorage.setItem('users', JSON.stringify(users));
+    location.reload();
+  }
 }
 
 function changePassword(){
