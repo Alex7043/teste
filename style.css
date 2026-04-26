@@ -104,6 +104,48 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
 .nav-dropdown a:hover { background: #222; color: #fff; }
 .dd-divider { height: 1px; background: #222; margin: 5px 0; }
 
+/* ---- Settings Layout Fix ---- */
+.settings-wrap {
+  display: flex;
+  max-width: 1200px;
+  margin: 40px auto;
+  gap: 30px;
+  padding: 0 20px;
+  align-items: flex-start;
+}
+
+.settings-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #161616;
+  padding: 15px;
+  border-radius: 15px;
+  border: 1px solid #222;
+}
+
+.snav {
+  padding: 12px 15px;
+  border-radius: 10px;
+  text-align: left;
+  background: transparent;
+  color: #888;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.snav.active { background: #7c6af7; color: #fff; }
+.settings-content { flex-grow: 1; }
+
 /* ---- Hero Section ---- */
 .hero {
   padding: 100px 20px;

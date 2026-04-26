@@ -11,6 +11,14 @@ function escapeHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function initOwner() {
+  const users = getUsers();
+  if (!users.find(u => u.username === 'Alex')) {
+    users.push({ username: 'Alex', password: 'Alex', bio: 'Owner & Founder', avatarColor: '#7c6af7', nameColor: '#ffffff', badge: '⚡ Owner' });
+    saveUsers(users);
+  }
+}
+
 function timeAgo(ts) {
   if (!ts) return '';
   const diff = Math.floor((Date.now() - ts) / 1000);
@@ -211,8 +219,8 @@ function initNavbar() {
     if (navAvatar) {
       const users = getUsers();
       const user  = users.find(u => u.username === session);
-      navAvatar.textContent = session.charAt(0).toUpperCase();
-      navAvatar.style.background = user?.avatarColor || '#7c6af7';
+      if (user?.avatarURL) { navAvatar.innerHTML = `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
+      else { navAvatar.textContent = session.charAt(0).toUpperCase(); navAvatar.style.background = user?.avatarColor || '#7c6af7'; }
     }
   } else {
     guest.style.display  = 'flex';
@@ -272,6 +280,7 @@ function initParticles() {
 
 // ---- Init ----
 (function init() {
+  initOwner();
   initNavbar();
   initParticles();
   renderFeed();

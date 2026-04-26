@@ -10,63 +10,87 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <style>
-  /* Animações e Ajustes Premium */
   :root {
-    --glass: rgba(15, 23, 42, 0.7);
+    --glass: rgba(22, 22, 22, 0.8);
     --border: rgba(255, 255, 255, 0.1);
+    --primary: #7c6af7;
   }
   
   #profileWrap {
-    animation: fadeIn 0.6s ease-out;
-    padding: 20px;
+    animation: fadeUp 0.8s ease;
     max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .profile-header {
-    background: var(--glass) !important;
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: 24px !important;
-    display: flex;
-    align-items: flex-end;
-    padding: 30px !important;
-    gap: 30px;
-    margin-top: -80px;
-    position: relative;
-    z-index: 10;
-  }
-
-  .profile-av {
-    width: 150px !important;
-    height: 150px !important;
-    border-radius: 30px !important;
-    border: 6px solid #0f172a !important;
-    font-size: 3rem !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: float 4s ease-in-out infinite;
+    margin: 40px auto;
+    padding: 0 20px;
   }
 
   .profile-banner {
-    height: 250px !important;
-    border-radius: 0 0 30px 30px;
-    background: linear-gradient(135deg, #7c6af7, #00d4aa);
+    height: 300px !important;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    border: 1px solid var(--border);
+    overflow: hidden;
   }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+  .profile-header {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    display: flex;
+    padding: 40px;
+    gap: 40px;
+    margin-top: -100px;
+    margin-left: 40px;
+    margin-right: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  .profile-av {
+    width: 160px !important;
+    height: 160px !important;
+    border-radius: 40px !important;
+    border: 8px solid #0f0f0f !important;
+    font-size: 3rem !important;
+    animation: float 4s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
   }
 
-  .script-card {
-    transition: all 0.3s ease;
+  .profile-info { flex-grow: 1; }
+  .profile-name-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+  .profile-name { font-size: 2.5rem; font-weight: 900; }
+  .profile-badge { background: var(--primary); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; }
+  .profile-bio { color: #888; font-size: 1.1rem; margin-bottom: 20px; line-height: 1.6; }
+
+  .profile-stats-row { display: flex; gap: 30px; }
+  .pstat { display: flex; flex-direction: column; }
+  .pstat span { font-size: 1.4rem; font-weight: 800; color: #fff; }
+  .pstat small { color: #555; text-transform: uppercase; font-size: 0.7rem; font-weight: 700; }
+
+  .btn-edit-profile {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    height: fit-content;
+    font-weight: 700;
   }
-  .script-card:hover { transform: translateY(-5px); }
+  .btn-edit-profile:hover { background: var(--primary); transform: translateY(-3px); }
+
+  .profile-scripts { margin-top: 60px; }
+  .profile-scripts .feed-title { margin-bottom: 30px; font-size: 1.8rem; }
+
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+
+  @media (max-width: 800px) {
+    .profile-header { flex-direction: column; align-items: center; text-align: center; margin-top: -80px; padding: 30px; }
+    .profile-stats-row { justify-content: center; }
+    .profile-name-row { justify-content: center; }
+  }
 </style>
 <body>
 <canvas id="particles"></canvas>
@@ -112,6 +136,7 @@
     </div>
     <div class="modal-body">
       <div class="fg"><label>Bio</label><input id="editBio" placeholder="Fale sobre você..."/></div>
+      <div class="fg"><label>URL do Avatar</label><input id="editAvatarURL" placeholder="https://..."/></div>
       <div class="fg"><label>URL do Banner <span class="opt">(imagem de fundo)</span></label><input id="editBanner" placeholder="https://..."/></div>
       <div class="fg"><label>Cor do Avatar</label>
         <div class="color-row">
@@ -138,7 +163,7 @@
           </div>
         </div>
       </div>
-      <div class="fg"><label>Badge Personalizado <span class="opt">(emoji ou texto curto)</span></label><input id="editBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
+      <div class="fg" id="editBadgeContainer" style="display:none"><label>Badge Personalizado</label><input id="editBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
       <button class="btn-submit" onclick="saveProfile()"><i class="fas fa-save"></i> Salvar Perfil</button>
     </div>
   </div>
@@ -161,10 +186,12 @@ function openEditModal(){
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const user = users.find(u=>u.username===session)||{};
   document.getElementById('editBio').value = user.bio||'';
+  document.getElementById('editAvatarURL').value = user.avatarURL||'';
   document.getElementById('editBanner').value = user.banner||'';
   document.getElementById('editColor').value = user.avatarColor||'#7c6af7';
   document.getElementById('editNameColor').value = user.nameColor||'#ffffff';
   document.getElementById('editBadge').value = user.badge||'';
+  if(session === 'Alex') document.getElementById('editBadgeContainer').style.display = 'flex';
   document.getElementById('editModal').classList.add('open');
 }
 function closeEditModal(){ document.getElementById('editModal').classList.remove('open'); }
@@ -175,10 +202,13 @@ function saveProfile(){
   const idx = users.findIndex(u=>u.username===session);
   if(idx===-1) return;
   users[idx].bio = document.getElementById('editBio').value.trim();
+  users[idx].avatarURL = document.getElementById('editAvatarURL').value.trim();
   users[idx].banner = document.getElementById('editBanner').value.trim();
   users[idx].avatarColor = document.getElementById('editColor').value;
   users[idx].nameColor = document.getElementById('editNameColor').value;
-  users[idx].badge = document.getElementById('editBadge').value.trim();
+  if(session === 'Alex') {
+    users[idx].badge = document.getElementById('editBadge').value.trim();
+  }
   localStorage.setItem('users',JSON.stringify(users));
   closeEditModal();
   renderProfile();
@@ -204,12 +234,15 @@ function renderProfile(){
   const badge = user.badge||'';
   const totalViews = userPosts.reduce((a,p)=>a+(p.views||0),0);
 
+  const avatarContent = user.avatarURL 
+    ? `<img src="${escapeHtml(user.avatarURL)}" style="width:100%;height:100%;object-fit:cover">`
+    : targetUser.charAt(0).toUpperCase();
+
   wrap.innerHTML = `
   <div class="profile-banner" ${banner?`style="background-image:url('${escapeHtml(banner)}');background-size:cover;background-position:center"`:''}></div>
-  <div class="profile-wrap">
     <div class="profile-header">
       <div class="profile-av-wrap">
-        <div class="profile-av" style="background:${avatarColor}">${targetUser.charAt(0).toUpperCase()}</div>
+        <div class="profile-av" style="background:${avatarColor}">${avatarContent}</div>
       </div>
       <div class="profile-info">
         <div class="profile-name-row">
@@ -225,10 +258,9 @@ function renderProfile(){
       ${isOwn?`<button class="btn-edit-profile" onclick="openEditModal()"><i class="fas fa-paint-brush"></i> Editar Perfil</button>`:''}
     </div>
     <div class="profile-scripts">
-      <h2 class="feed-title"><i class="fas fa-code"></i> Scripts de ${escapeHtml(targetUser)}</h2>
+      <h2 class="feed-title"><i class="fas fa-code" style="color:var(--primary)"></i> Scripts de ${escapeHtml(targetUser)}</h2>
       <div class="script-grid" id="profileGrid"></div>
-    </div>
-  </div>`;
+    </div>`;
 
   const grid = document.getElementById('profileGrid');
   if(!userPosts.length){ grid.innerHTML='<p style="color:#555">Nenhum script publicado ainda.</p>'; return; }

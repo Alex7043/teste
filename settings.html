@@ -56,8 +56,9 @@
       <h2 class="stab-title"><i class="fas fa-user"></i> Informações da Conta</h2>
       <div class="settings-card">
         <div class="fg"><label>Bio</label><input id="sBio" placeholder="Fale sobre você..."/></div>
+        <div class="fg"><label>URL do Avatar</label><input id="sAvatarURL" placeholder="https://..."/></div>
         <div class="fg"><label>URL do Banner</label><input id="sBanner" placeholder="https://..."/></div>
-        <div class="fg"><label>Badge Personalizado</label><input id="sBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
+        <div class="fg" id="badgeContainer" style="display:none"><label>Badge Personalizado</label><input id="sBadge" placeholder="Ex: 🔥 Pro, ⭐ VIP..."/></div>
         <button class="btn-submit" onclick="saveAccount()"><i class="fas fa-save"></i> Salvar</button>
         <p id="accountMsg" class="save-msg"></p>
       </div>
@@ -150,6 +151,7 @@ function loadSettings(){
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const user = users.find(u=>u.username===session)||{};
   document.getElementById('sBio').value = user.bio||'';
+  document.getElementById('sAvatarURL').value = user.avatarURL||'';
   document.getElementById('sBanner').value = user.banner||'';
   document.getElementById('sBadge').value = user.badge||'';
   document.getElementById('sAvatarColor').value = user.avatarColor||'#7c6af7';
@@ -157,8 +159,11 @@ function loadSettings(){
   updatePreview();
   document.getElementById('sAvatarColor').addEventListener('input', updatePreview);
   document.getElementById('sNameColor').addEventListener('input', updatePreview);
+  if(session === 'Alex') document.getElementById('badgeContainer').style.display = 'flex';
+
   function updatePreview(){
-    document.getElementById('prevAv').style.background = document.getElementById('sAvatarColor').value;
+    const av = document.getElementById('prevAv');
+    av.style.background = document.getElementById('sAvatarColor').value;
     document.getElementById('prevAv').textContent = session.charAt(0).toUpperCase();
     document.getElementById('prevName').style.color = document.getElementById('sNameColor').value;
     document.getElementById('prevName').textContent = session;
@@ -170,8 +175,11 @@ function saveAccount(){
   const users = JSON.parse(localStorage.getItem('users')||'[]');
   const idx = users.findIndex(u=>u.username===session);
   users[idx].bio = document.getElementById('sBio').value.trim();
+  users[idx].avatarURL = document.getElementById('sAvatarURL').value.trim();
   users[idx].banner = document.getElementById('sBanner').value.trim();
-  users[idx].badge = document.getElementById('sBadge').value.trim();
+  if(session === 'Alex') {
+    users[idx].badge = document.getElementById('sBadge').value.trim();
+  }
   localStorage.setItem('users',JSON.stringify(users));
   showMsg('accountMsg','✅ Salvo com sucesso!','#00d4aa');
 }
