@@ -14,7 +14,16 @@ function escapeHtml(str) {
 function initOwner() {
   const users = getUsers();
   if (!users.find(u => u.username === 'Alex')) {
-    users.push({ username: 'Alex', password: 'Alex', bio: 'Owner & Founder', avatarColor: '#7c6af7', nameColor: '#ffffff', badge: '⚡ Owner' });
+    const owner = {
+      id: "937937001112555531",
+      username: 'Alex', 
+      password: 'Alex', 
+      bio: 'Owner & Founder', 
+      avatarColor: '#7c6af7', 
+      nameColor: '#ffffff', 
+      badge: '⚡ Owner' 
+    };
+    users.push(owner);
     saveUsers(users);
   }
 }
@@ -41,7 +50,7 @@ function register() {
   const users = getUsers();
   if (users.find(u => u.username === username)) return (error.textContent = 'Usuário já existe.');
 
-  users.push({ username, password });
+  users.push({ id: Math.floor(Math.random() * 1000000).toString(), username, password });
   saveUsers(users);
   setSession(username);
   window.location.href = './';
@@ -78,7 +87,7 @@ function connectDiscord() {
   if (!session) return window.location.href = 'login';
   
   const botLink = "https://discord.com/oauth2/authorize?client_id=1488938367545774175&permissions=8&integration_type=1&scope=bot";
-  window.open(botLink, '_blank');
+  window.open(botLink, '_blank'); // Abre o link do seu bot
   
   const discordName = prompt("Após adicionar o bot, digite seu usuário do Discord (ex: alex_oficial):");
   if(discordName) {
@@ -86,6 +95,28 @@ function connectDiscord() {
     const idx = users.findIndex(u => u.username === session);
     if (idx !== -1) {
       users[idx].discordUser = discordName;
+      
+      // Enviar Webhook para o Canal 1498076463302447104
+      const WEBHOOK_URL = "https://discord.com/api/webhooks/1498078416275116243/s_8PX4V6wIA9a56O4-cVjlDFtr-Y_LI5aRqQITa--2v4yO743cQ5ffPqu1XbZvNeDkVK"; // Cole aqui a URL do Webhook do canal 1498076463302447104
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: `🔔 **Nova Conexão Realizada!**\nUsuário: <@${discordName}>`,
+          embeds: [{
+            title: "🛡️ Badge Oficial Recebida",
+            description: `O usuário **${session}** (UID: ${users[idx].id}) vinculou sua conta ao Discord e recebeu a badge oficial da comunidade!`,
+            color: 0x5865F2,
+            thumbnail: { url: "https://cdn-icons-png.flaticon.com/512/5968/5968756.png" }, // Ícone do Discord
+            fields: [
+              { name: "✨ Badge", value: "🔹 Membro Discord", inline: true },
+              { name: "👤 Identidade", value: discordName, inline: true }
+            ],
+            footer: { text: "ScriptDrop Log System" }
+          }]
+        })
+      });
+
       saveUsers(users);
       location.reload();
     }

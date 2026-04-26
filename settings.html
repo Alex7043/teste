@@ -223,9 +223,12 @@ function loadSettings(){
   document.getElementById('sAvatarColor').value = user.avatarColor||'#7c6af7';
   document.getElementById('sNameColor').value = user.nameColor||'#ffffff';
   updatePreview();
+  
   document.getElementById('sAvatarColor').addEventListener('input', updatePreview);
   document.getElementById('sNameColor').addEventListener('input', updatePreview);
-  if(session === 'Alex') document.getElementById('badgeContainer').style.display = 'flex';
+
+  // Apenas o Alex (pelo ID) vê o campo de badge personalizado
+  if(user.id === "937937001112555531") document.getElementById('badgeContainer').style.display = 'flex';
 
   // Carrega status do discord
   if (user.discordUser) {
