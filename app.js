@@ -41,69 +41,6 @@ function timeAgo(ts) {
   return Math.floor(diff / 86400) + 'd atrás';
 }
 
-// Helper para detectar se o ícone é uma imagem/URL
-function isImage(str) {
-  if (!str) return false;
-  const s = str.toLowerCase().trim();
-  return s.startsWith('http') || s.startsWith('data:image') || s.includes('discordapp.com') || s.includes('.webp') || s.includes('.png') || s.includes('.gif');
-}
-
-// ---- Badges Helper ----
-function renderBadgesHtml(user) {
-  if (!user) return '';
-  let html = '<div class="badges-row">';
-  const uid = user.id || '';
-  
-  if (uid === "937937001112555531") {
-    html += `
-      <div class="badge-item">
-        <span class="owner-glow">⚡</span>
-        <div class="badge-tooltip"><strong>Owner & Founder</strong><p>Dono e desenvolvedor supremo.</p></div>
-      </div>`;
-  }
-  if (user.isVerified) {
-    html += `
-      <div class="badge-item" style="color:#1e90ff">
-        <i class="fas fa-check-circle"></i>
-        <div class="badge-tooltip"><strong>Verificado</strong><p>Usuário de confiança da comunidade.</p></div>
-      </div>`;
-  }
-  if (user.discordUser) {
-    html += `
-      <div class="badge-item" style="color:#5865F2">
-        <i class="fab fa-discord"></i>
-        <div class="badge-tooltip"><strong>Discord</strong><p>Membro do servidor oficial.</p></div>
-      </div>`;
-  }
-  if (user.badges) {
-    user.badges.forEach(b => {
-      const content = isImage(b.icon) ? `<img src="${escapeHtml(b.icon)}" class="admin-badge-icon">` : b.icon;
-      html += `
-        <div class="badge-item">
-          ${content}
-          <div class="badge-tooltip"><strong>${escapeHtml(b.name || 'Badge Oficial')}</strong><p>${escapeHtml(b.desc)}</p></div>
-        </div>`;
-    });
-  }
-  html += '</div>';
-  return html;
-}
-
-// ---- Roblox API Helper ----
-async function fetchRobloxGame(placeId) {
-  try {
-    // Usando proxy para evitar CORS (comum em sites estáticos)
-    const proxy = "https://api.allorigins.win/get?url=";
-    const apiUrl = encodeURIComponent(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${placeId}`);
-    const response = await fetch(proxy + apiUrl);
-    const data = await response.json();
-    const details = JSON.parse(data.contents)[0];
-    
-    const thumbUrl = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${placeId}&size=150x150&format=Png&isCircular=false`;
-    return { name: details.name, image: thumbUrl };
-  } catch (e) { return null; }
-}
-
 // ---- Force Owner ID ----
 function fixOwnerId() {
   let users = getUsers();
@@ -170,6 +107,19 @@ function verifyUser(userId) {
   }
 }
 
+function deletePost(postId) {
+  const session = getSession();
+  let posts = getPosts();
+  const post = posts.find(p => p.id === postId);
+  if (!post) return;
+  if (post.author !== session && session !== 'Alex') return showNotification("Sem permissão!", "error");
+  if (!confirm("Deletar este script para sempre?")) return;
+  posts = posts.filter(p => p.id !== postId);
+  savePosts(posts);
+  showNotification("Script deletado!");
+  location.reload();
+}
+
 function logout() {
   clearSession();
   window.location.href = './';
@@ -234,7 +184,7 @@ function submitPost() {
   if (!title || !code) return showNotification('Preencha o título e o script.', 'error');
   if (user?.isBanned) return showNotification('Sua conta está banida.', 'error');
   if (!user?.canPost) return showNotification('Seu acesso para publicar scripts foi revogado.', 'error');
-  if (user?.timeoutUntil > Date.now()) return showNotification('Você está em timeout.', 'error');
+  if (user?.timeoutUntil > Date.now()) return showNotification('Você está em timeout temporário.', 'error');
 
   const posts = getPosts();
   posts.unshift({
@@ -243,7 +193,6 @@ function submitPost() {
     author: getSession(),
     date: new Date().toLocaleDateString('pt-BR'),
     ts: Date.now(),
-    isVerifiedPost: user.isVerified || false,
     views: 0
   });
   savePosts(posts);
@@ -266,6 +215,7 @@ function copyScript(id, e) {
   navigator.clipboard.writeText(post.code);
 }
 
+// ---- Filter ----
 let currentFilter = 'all';
 function setFilter(f, btn) {
   currentFilter = f;
@@ -274,12 +224,12 @@ function setFilter(f, btn) {
   renderFeed();
 }
 
+// ---- Feed ----
 function renderFeed() {
   const grid = document.getElementById('scriptGrid');
   if (!grid) return;
 
   let posts = getPosts();
-  const users = getUsers();
   const q = document.getElementById('searchInput')?.value.toLowerCase() || '';
 
   if (q) posts = posts.filter(p => (p.title + (p.game||'') + (p.author||'')).toLowerCase().includes(q));
@@ -295,18 +245,11 @@ function renderFeed() {
     const img = p.image
       ? `<div class="pc-img"><img src="${escapeHtml(p.image)}" alt="cover" onerror="this.parentElement.classList.add('pc-img-err')"/></div>`
       : `<div class="pc-img pc-img-placeholder"><i class="fas fa-code"></i></div>`;
-    
-    const authorUser = users.find(u => u.username === p.author);
-    const badges = renderBadgesHtml(authorUser);
-
     return `
     <a class="post-card" href="script?id=${p.id}">
       <div class="pc-top">
         <span class="pc-time"><i class="fas fa-clock"></i> ${timeAgo(p.ts) || p.date}</span>
-        <div class="pc-author-wrap">
-          <span class="pc-author">@${escapeHtml(p.author || 'anon')}</span>
-          ${badges}
-        </div>
+        <span class="pc-author">@${escapeHtml(p.author || 'anon')}</span>
       </div>
       ${img}
       <div class="pc-bottom">

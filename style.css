@@ -511,7 +511,64 @@ button { cursor: pointer; border: none; outline: none; transition: all 0.3s ease
   font-weight: 900;
 }
 
-/* ---- Custom Tooltip System ---- */
+
+/* ---- Admin Dashboard Cards ---- */
+.admin-user-container {
+  margin-bottom: 30px;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 25px;
+  animation: fadeUp 0.5s ease;
+}
+
+.admin-user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #222;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.admin-card {
+  background: #111;
+  border: 1px solid #222;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-card h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #555;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-reset-warn { background: #2f3542; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; }
+.btn-verify { background: #ffd700; color: #000; padding: 10px 20px; border-radius: 8px; font-weight: 800; border: none; cursor: pointer; }
+
+.btn-delete-script {
+  position: absolute; top: 10px; right: 10px; 
+  background: #ff4757; color: #fff; 
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10; opacity: 0; transition: 0.3s;
+}
+.script-card:hover .btn-delete-script { opacity: 1; }
 .badge-item {
   position: relative;
   display: flex;
