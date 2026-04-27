@@ -193,6 +193,7 @@ function submitPost() {
     author: getSession(),
     date: new Date().toLocaleDateString('pt-BR'),
     ts: Date.now(),
+    isVerifiedPost: user?.isVerified || false,
     views: 0
   });
   savePosts(posts);
